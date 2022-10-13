@@ -1,10 +1,15 @@
 const asyncHandler = require("../middleware/async");
 const ValidatorModel = require("../models/Validator-profile");
+const nftForValidation = require("../models/NftForValidation")
+const NFTprofileDetailModel = require("../models/Nftprofiledetail")
 const userModel = require("../models/User-profile");
 const UserModel = require("../models/User-profile");
+const userActivityModel = require("../models/user-activity");
+const validatorActivityModel = require("../models/validator-activity")
 const validatorHelper = require("../middleware/validator-helper")
 const userHelper = require("../middleware/user-helper")
 const jwt = require('jsonwebtoken')
+const moment = require('moment');
 
 exports.getValidators = asyncHandler(async (req, res, next) => {
   try {
@@ -139,4 +144,131 @@ else{
     });
   }
   
+}
+
+
+
+exports.validatorsProfile = async (req, res) => {
+  try {
+    let data = await ValidatorModel.find();
+    res.send({result : data})
+  } catch (error) {
+    res.status(400).json({
+      success: false,
+      data: [],
+      message: "Failed to edit Profile",
+    });
+  }
+  
+}
+
+
+
+exports.RequestforValidation = async (req, res) => {
+  try {
+    let data = await nftForValidation.find();
+    res.send({result : data})
+  } catch (error) {
+    res.status(400).json({
+      success: false,
+      data: [],
+      message: "Failed to edit Profile",
+    });
+  }
+  
+}
+
+
+
+exports.validateNFT = async (req, res) => {
+  // try {
+    const authHeader = req.headers.authorization;
+  const token = authHeader.split(' ')[1];
+  var user = jwt.decode(token, process.env.JWT_SECRET)
+  // await fvtnft.destroy();
+  // const validatorDetail = await validatorModel.validatorDetail(user.address);
+  const validatorDetail = await validatorHelper.validatorDetail(user.address);
+  const NFTdetail = await userHelper.NFTdetails(req.body.tokenid);
+
+  let result = await nftForValidation.updateMany(
+    {tokenid : req.body.tokenid},
+    {$set : 
+        {
+          validationstate: "validated",
+          validatorname: validatorDetail[0].name,
+          validatorusername: validatorDetail[0].username,
+          validatorwltaddress: validatorDetail[0].address,
+          validateAmount: req.body.validateAmount
+        }
+    }
+)
+
+
+let newActivityForUser = new userActivityModel({
+
+  assetname: req.body.assetname,
+  tokenid: req.body.tokenid,
+  validatorwltaddress: user.address,
+  validatorname: validatorDetail[0].name,
+  validatorusername: validatorDetail[0].username,
+  Message: "NFT Validated",
+  DateAndTime: moment().format(),
+  username: NFTdetail[0].username,
+  name: NFTdetail[0].name,
+  userwltaddress: user.address,
+  validateAmount: req.body.validateAmount
+
+})
+await newActivityForUser.save();
+
+
+
+let newActivityForValidator = new validatorActivityModel({
+
+  assetname: req.body.assetname,
+  tokenid: req.body.tokenid,
+  validatorwltaddress: user.address,
+  validatorname: validatorDetail[0].name,
+  validatorusername: validatorDetail[0].username,
+  createrusername: NFTdetail[0].createrusername,
+  creatername: NFTdetail[0].creatername,
+  createrwltaddress: NFTdetail[0].createrwltaddress,
+  userWltAddress: user.address,
+  Message: "Validation Request",
+  DateAndTime: moment().format(),
+  usernameofuser: NFTdetail[0].ownerusername,
+  nameofuser: NFTdetail[0].ownername,
+  userwltaddress: NFTdetail[0].ownerwltaddress,
+  DateAndTime: moment().format()
+
+})
+await newActivityForValidator.save();
+
+
+await NFTprofileDetailModel.updateMany(
+  {tokenid : req.body.tokenid},
+  {$set : 
+      {
+        validationstate: "validated",
+        validatorname: validatorDetail[0].name,
+        validatorusername: validatorDetail[0].username,
+        validatorwltaddress: user.address,
+        validateAmount: req.body.validateAmount
+      }
+  }
+)
+
+res.send({ result: "Validated" })
+
+  // } catch (error) {
+  //   res.status(400).json({
+  //     success: false,
+  //     data: [],
+  //     message: "validation Failed",
+  //   });
+  // }
+
+
+
+
 }

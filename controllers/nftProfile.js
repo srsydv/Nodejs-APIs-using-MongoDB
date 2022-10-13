@@ -62,7 +62,11 @@ exports.createNft = asyncHandler(async (req, res, next) => {
       nftimage3: req.body.nftimage3,
       blockchain: req.body.blockchain,
       ipfsmetadataurl: req.body.ipfsmetadataurl,
-      nftcreationdate: moment().format()
+      nftcreationdate: moment().format(),
+      validatorname: "",
+      validatorusername: "",
+      validatorwltaddress: "",
+      validateAmount: ""
 
     })
     await newNFT.save();

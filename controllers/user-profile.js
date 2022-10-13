@@ -139,7 +139,11 @@ exports.NFTforValidation = async function (req, res) {
       nftimage1: NFTdetail[0].nftimage1,
       nftimage2: NFTdetail[0].nftimage2,
       nftimage3: NFTdetail[0].nftimage3,
-      sendforvalidationdate: moment().format()
+      sendforvalidationdate: moment().format(),
+      validatorname: "",
+      validatorusername: "",
+      validatorwltaddress: "",
+      validateAmount: ""
 
     })
     await validationReqData.save();

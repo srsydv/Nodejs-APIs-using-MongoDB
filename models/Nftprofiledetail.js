@@ -30,7 +30,8 @@ const NftProfileDetail = new mongoose.Schema({
   }, //3 options
   validatorname: String,
   validatorusername: String,
-  validatorwltaddreHere: String,
+  validatorwltaddress: String,
+  validateAmount: String,
   nftcreationdate: String,
   burnNFTstatus: String,
   swapStatus: {
