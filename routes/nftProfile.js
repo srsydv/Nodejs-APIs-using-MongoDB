@@ -5,4 +5,5 @@ const router = express.Router();
 
 router.route("/").get(getNfts).post(createNft);
 
+
 module.exports = router;

@@ -1,8 +1,12 @@
 const express = require("express");
-const { getUsers, createUser } = require("../controllers/user-profile");
+const userController = require("../controllers/user-profile");
+const access_token = require("../services/token.services")
 
-const router = express.Router();
+const   router = express.Router();
 
-router.route("/").get(getUsers).post(createUser);
+router.route("/").get(userController.getUsers).post(userController.createUser);
+
+//edit Profile of user
+router.route("/editProfile").post(access_token.authenticateJWT,userController.editProfile);
 
 module.exports = router;

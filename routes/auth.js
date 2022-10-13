@@ -1,8 +1,12 @@
-// const express = require("express");
-// const { getAuth } = require("../controllers/auth");
+const express = require("express");
+const authController = require("../controllers/auth");
 
-// const router = express.Router();
+const router = express.Router();
 
-// router.route("/signup").get(getAuth);
+//User Login
+router.route("/login").post(authController.Authlogin);
 
-// module.exports = router;
+//validatorlogin
+router.route("/validatorlogin").post(authController.validatorlogin);
+
+module.exports = router;

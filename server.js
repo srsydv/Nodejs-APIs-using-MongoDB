@@ -14,7 +14,7 @@ dotenv.config({ path: "./.env" });
 
 connectDB();
 
-// const auth = require("./routes/auth");
+const auth = require("./routes/auth");
 const nft = require("./routes/nftProfile");
 const user = require("./routes/user-profile");
 const validator = require("./routes/validator-profile");
@@ -47,8 +47,8 @@ app.use(hpp());
 app.use(cors());
 
 // app.use(errorHandler);
-
-// app.use("/api/auth", auth);
+// User Login
+app.use("/auth", auth);
 app.use("/api/nft", nft);
 app.use("/api/user", user);
 app.use("/api/validator", validator);
