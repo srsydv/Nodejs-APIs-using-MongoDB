@@ -1,0 +1,62 @@
+const mongoose = require("mongoose");
+
+const NftProfileDetail = new mongoose.Schema({
+  assetname: String,
+  typeofart: String,
+  dimension: String,
+  bio: String,
+  createrusername: String,
+  creatername: String,
+  createrwltaddress: String,
+  ownerusername: String,
+  ownername: String,
+  ownerwltaddress: String,
+  city: String,
+  tokenid: String,
+  dateofcreation: String,
+  marking: String,
+  provenance: String,
+  estimatedvalue: String,
+  evidenceofownership: String,
+  nftimage: String,
+  nftimage1: String,
+  nftimage2: String,
+  nftimage3: String,
+  blockchain: String,
+  validationstate: {
+    type: String,
+    enum: ["not started", "pending", "validated"],
+    default: "Not Started",
+  }, //3 options
+  validatorname: String,
+  validatorusername: String,
+  validatorwltaddreHere: String,
+  nftcreationdate: String,
+  burnNFTstatus: String,
+  swapStatus: {
+    type: String,
+    enum: ["not started", "pending", "swaped"],
+    default: "Not Started",
+  },
+  sellstatus: {
+    type: String,
+    enum: ["not started", "pending", "sold"],
+    default: "Not Started",
+  },
+  ipfsmetadataurl: String,
+  mptype: String,
+  mpprice: String,
+  mpduration: String,
+  mpsupply: String,
+  mpsetasbundle: String,
+  mpreserveforsp: String,
+  mpfees: String,
+  redeemNFTstatus: String,
+  redeemNFTrequest: {
+    type: String,
+    enum: ["false", "true", "accepted"],
+    default: "false",
+  },
+});
+
+module.exports = mongoose.model("NftProfileDetail", NftProfileDetail);
