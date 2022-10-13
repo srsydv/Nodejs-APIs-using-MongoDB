@@ -89,11 +89,31 @@ const insertAddAsUser = async (clm) => {
     }
 }
 
+const validatorDetail = async (validatorwltaddress) => {
+    try {
+        return new Promise(async (resolve, reject) => {
+            let data = await validatorModel.find({address:(validatorwltaddress).toLowerCase()});
+            if (data) {
+                resolve(data);
+            } else {
+                reject("Error");
+            }
+        })
+        
+    } catch (error) {
+        res.status(400).json({
+            success: false,
+            data: [],
+            message: "Validator detail Failed",
+        });
+    }
+}
 
 
 module.exports = {
     loginValidator,
     insertAdd,
     loginAsUser,
-    insertAddAsUser
+    insertAddAsUser,
+    validatorDetail
 }

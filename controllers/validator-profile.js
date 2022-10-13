@@ -102,12 +102,12 @@ const authHeader = req.headers.authorization;
 const token = authHeader.split(' ')[1];
 var user = jwt.decode(token, process.env.JWT_SECRET)
 
-const userDetail = await userHelper.userDetail(user.address);
-if(userDetail[0].username == req.body.username){
+const validatorDetail = await validatorHelper.validatorDetail(user.address);
+if(validatorDetail[0].username == req.body.username){
     res.send({result : "username already exist"})
 }
 else{
-    let result = await userModel.updateMany(
+    let result = await ValidatorModel.updateMany(
         {address : user.address},
         {$set : 
             {

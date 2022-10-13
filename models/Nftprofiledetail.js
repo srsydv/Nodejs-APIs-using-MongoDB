@@ -26,7 +26,7 @@ const NftProfileDetail = new mongoose.Schema({
   validationstate: {
     type: String,
     enum: ["not started", "pending", "validated"],
-    default: "Not Started",
+    default: "not started",
   }, //3 options
   validatorname: String,
   validatorusername: String,
@@ -36,12 +36,12 @@ const NftProfileDetail = new mongoose.Schema({
   swapStatus: {
     type: String,
     enum: ["not started", "pending", "swaped"],
-    default: "Not Started",
+    default: "not started",
   },
   sellstatus: {
     type: String,
     enum: ["not started", "pending", "sold"],
-    default: "Not Started",
+    default: "not started",
   },
   ipfsmetadataurl: String,
   mptype: String,
