@@ -5,6 +5,7 @@ const validatorActivity = require("../models/validator-activity")
 const userActivity = require("../models/user-activity")
 const NFTforValidationModel = require("../models/NftForValidation");
 const NFTprofileDetailModel = require("../models/Nftprofiledetail");
+const userActivityModel = require("../models/user-activity");
 const userHelper = require("../middleware/user-helper")
 const validatorHelper = require("../middleware/validator-helper")
 const jwt = require('jsonwebtoken')
@@ -192,3 +193,221 @@ exports.NFTforValidation = async function (req, res) {
   }
 }
 
+exports.onSaleNFTs = async function (req, res) {
+  try {
+    const authHeader = req.headers.authorization;
+    const token = authHeader.split(' ')[1];
+    var user = jwt.decode(token, process.env.JWT_SECRET)
+    let data = await NFTprofileDetailModel.find({ ownerwltaddress: user.address, sellstatus: "pending" });
+    res.send({ result: data })
+  } catch (error) {
+    res.status(400).json({
+      success: false,
+      data: [],
+      message: "Failed to edit Profile",
+    });
+  }
+}
+
+
+
+exports.buyNFT = async (req, res) => {
+  try {
+    const authHeader = req.headers.authorization;
+    const token = authHeader.split(' ')[1];
+    var user = jwt.decode(token, process.env.JWT_SECRET)
+    const userDetail = await userHelper.userDetail(user.address);
+
+    let result = await NFTforValidationModel.updateMany(
+      {
+        tokenid: req.body.tokenid,
+        assetname: req.body.assetname
+      },
+      {
+        $set:
+        {
+          solddate: moment().format(),
+          sellstatus: 'sold',
+          ownername: userDetail[0].name,
+          ownerwltaddress: user.address,
+          ownerusername: userDetail[0].username
+        }
+      }
+    )
+    res.send(result);
+  } catch (error) {
+    res.status(400).json({
+      success: false,
+      data: [],
+      message: "Failed to edit Profile",
+    });
+  }
+}
+
+
+
+exports.reqForSwapAsset = async (req, res) => {
+  try {
+
+    const authHeader = req.headers.authorization;
+    const token = authHeader.split(' ')[1];
+    var user = jwt.decode(token, process.env.JWT_SECRET)
+    const userDetail = await userHelper.userDetail(user.address);
+    const NFTdetail = await userHelper.NFTdetails(req.body.tokenid);
+    let newActivityForUser = new userActivityModel({
+
+      assetname: req.body.assetname,
+      tokenid: req.body.tokenid,
+      // Here will be out sign for swap request
+      Message: "Swap Request OUT",
+      DateAndTime: moment().format(),
+      username: userDetail[0].username,
+      name: userDetail[0].name,
+      userwltaddress: user.address,
+      toswapassetname: req.body.toswapassetname,
+      toswaptokenid: req.body.toswaptokenid,
+      //This address will also get notification for swap Request IN
+      swaprequestuserwltAddress: NFTdetail[0].ownerwltaddress,
+      swaprequestname: NFTdetail[0].ownername,
+      swaprequestusername: NFTdetail[0].username,
+    })
+    await newActivityForUser.save();
+
+
+    let getSwapReq = new userActivityModel({
+
+      assetname: req.body.toswapassetname,
+      tokenid: req.body.toswaptokenid,
+      Message: "Swap Request IN",
+      DateAndTime: moment().format(),
+      username: NFTdetail[0].username,
+      name: NFTdetail[0].name,
+      userwltaddress: NFTdetail[0].ownerwltaddress,
+      toswapassetname: req.body.assetname,
+      toswaptokenid: req.body.tokenid,
+      swaprequestuserwltAddress: user.address,
+      swaprequestname: userDetail[0].name,
+      swaprequestusername: userDetail[0].username,
+    })
+    await getSwapReq.save();
+
+    await NFTprofileDetailModel.updateMany(
+      {
+        tokenid: req.body.tokenid,
+        assetname: req.body.assetname
+      },
+      {
+        $set:
+        {
+          swapStatus: `Swap Request send to ${req.body.toswaptokenid}`,
+        }
+      }
+    )
+
+    await NFTprofileDetailModel.updateMany(
+      {
+        tokenid: req.body.toswaptokenid,
+        assetname: req.body.toswapassetname
+      },
+      {
+        $set:
+        {
+          swapStatus: `Swap Request Recieved From ${req.body.tokenid}`,
+        }
+      }
+    )
+
+
+    res.send({ result: "Swap Request Sent, Successfully" })
+
+  } catch (error) {
+    res.status(400).json({
+      success: false,
+      data: [],
+      message: "Failed to edit Profile",
+    });
+  }
+}
+
+
+
+exports.acceptSwapRequest = async (req, res) => {
+  const authHeader = req.headers.authorization;
+  const token = authHeader.split(' ')[1];
+  var user = jwt.decode(token, process.env.JWT_SECRET)
+  const userDetail = await userHelper.userDetail(user.address);
+  const NFTdetail = await userHelper.NFTdetails(req.body.tokenid);
+
+  let newActivityForUser = new userActivityModel({
+
+    assetname: req.body.assetname,
+    tokenid: req.body.tokenid,
+    Message: "You Accepted swap Request",
+    DateAndTime: moment().format(),
+    username: userDetail[0].username,
+    name: userDetail[0].name,
+    userwltaddress: user.address,
+    toswapassetname: req.body.toswapassetname,
+    toswaptokenid: req.body.toswaptokenid,
+    swaprequesttouserwltAddress: NFTdetail[0].ownerwltaddress,
+    swaprequesttoname: NFTdetail[0].ownername,
+    swaprequesttousername: NFTdetail[0].username,
+  })
+  await newActivityForUser.save();
+
+
+  let getSwapped = new userActivityModel({
+
+    assetname: req.body.assetname,
+    tokenid: req.body.tokenid,
+    Message: "Your Swap Request is Accepted",
+    DateAndTime: moment().format(),
+    username: NFTdetail[0].username,
+    name: NFTdetail[0].name,
+    userwltaddress: NFTdetail[0].ownerwltaddress,
+    toswapassetname: req.body.toswapassetname,
+    toswaptokenid: req.body.toswaptokenid,
+    swaprequestuserwltAddress: user.address,
+    swaprequestname: userDetail[0].name,
+    swaprequestusername: userDetail[0].username,
+  })
+  await getSwapped.save();
+
+
+  await NFTprofileDetailModel.updateMany(
+    {
+      tokenid: req.body.tokenid,
+      assetname: req.body.assetname
+    },
+    {
+      $set:
+      {
+        swapStatus: `Swapped with tokenId ${req.body.toswaptokenid}`,
+        ownerusername: NFTdetail[0].username,
+        ownername: NFTdetail[0].name,
+        ownerwltaddress: NFTdetail[0].ownerwltaddress
+      }
+    }
+  )
+
+
+
+  await NFTprofileDetailModel.updateMany(
+    {
+      tokenid: req.body.toswaptokenid,
+      assetname: req.body.toswapassetname
+    },
+    {
+      $set:
+      {
+        swapStatus: `Swapped with tokenId ${req.body.tokenid}`,
+        ownerusername: userDetail[0].username,
+        ownername: userDetail[0].name,
+        ownerwltaddress: userDetail[0].ownerwltaddress
+      }
+    }
+  )
+
+
+  res.send({ result: "Swapped Successfully" })
+}

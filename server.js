@@ -19,6 +19,7 @@ const nft = require("./routes/nftProfile");
 const user = require("./routes/user-profile");
 const validator = require("./routes/validator-profile");
 const nftValation = require("./routes/nftForValidation");
+const marketplace = require("./routes/marketplace.routes")
 
 const app = express();
 app.use(cors());
@@ -53,6 +54,7 @@ app.use("/api/nft", nft);
 app.use("/api/user", user);
 app.use("/api/validator", validator);
 app.use("/api/nftValidation", nftValation);
+app.use("/api/marketplace", marketplace);
 
 app.get("/", (req, res) => {
   res.json({ message: "Welcome to Aconomy application." });

@@ -6,18 +6,8 @@ const jwt = require('jsonwebtoken')
 
 exports.getNfts = asyncHandler(async (req, res, next) => {
   try {
-    const nfts = await NftModel.find();
-    if (!nfts) {
-      res.json({
-        success: true,
-        data: [],
-      });
-    }
+    res.status(200).json(res.advancedResults);
 
-    res.status(200).json({
-      success: true,
-      data: nfts,
-    });
   } catch (err) {
     res.status(400).json({
       success: false,
@@ -29,7 +19,7 @@ exports.getNfts = asyncHandler(async (req, res, next) => {
 
 exports.createNft = asyncHandler(async (req, res, next) => {
   try {
-    
+
     const authHeader = req.headers.authorization;
     const token = authHeader.split(' ')[1];
     var user = jwt.decode(token, process.env.JWT_SECRET)
@@ -66,7 +56,15 @@ exports.createNft = asyncHandler(async (req, res, next) => {
       validatorname: "",
       validatorusername: "",
       validatorwltaddress: "",
-      validateAmount: ""
+      validateAmount: "",
+      mptype: "",
+      mpprice: "",
+      mpduration: "",
+      mpsupply: "",
+      mpsetasbundle: "",
+      mpreserveforspecificbuyer: "",
+      mpfees: "",
+      swapStatus: "not started"
 
     })
     await newNFT.save();
@@ -82,3 +80,20 @@ exports.createNft = asyncHandler(async (req, res, next) => {
     });
   }
 });
+
+
+exports.NFTdetail = async (req, res) => {
+  try {
+    const authHeader = req.headers.authorization;
+    const token = authHeader.split(' ')[1];
+    var user = jwt.decode(token, process.env.JWT_SECRET)
+    let data = await NftModel.find({ tokenid: req.query.tokenid });
+    res.send({ result: data })
+  } catch (error) {
+    res.status(400).json({
+      success: false,
+      data: [],
+      message: "Failed",
+    });
+  }
+}

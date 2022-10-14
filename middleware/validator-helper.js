@@ -5,7 +5,7 @@ const moment = require('moment');
 const loginValidator = async (clm) => {
     try {
         return new Promise(async (resolve, reject) => {
-            let data = await validatorModel.find({address:clm.address});
+            let data = await validatorModel.find({ address: clm.address });
             if (data) {
                 resolve(data);
             } else {
@@ -48,14 +48,14 @@ const insertAdd = async (clm) => {
 loginAsUser = async (clm) => {
     try {
         return new Promise(async (resolve, reject) => {
-            let data = await userModel.find({address:(clm.address).toLowerCase()});
+            let data = await userModel.find({ address: (clm.address).toLowerCase() });
             if (data) {
                 resolve(data);
             } else {
                 reject("Error");
             }
         })
-        
+
     } catch (error) {
         res.status(400).json({
             success: false,
@@ -92,14 +92,14 @@ const insertAddAsUser = async (clm) => {
 const validatorDetail = async (validatorwltaddress) => {
     try {
         return new Promise(async (resolve, reject) => {
-            let data = await validatorModel.find({address:(validatorwltaddress).toLowerCase()});
+            let data = await validatorModel.find({ address: (validatorwltaddress).toLowerCase() });
             if (data) {
                 resolve(data);
             } else {
                 reject("Error");
             }
         })
-        
+
     } catch (error) {
         res.status(400).json({
             success: false,

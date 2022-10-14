@@ -16,7 +16,7 @@ const NftProfileDetail = new mongoose.Schema({
   dateofcreation: String,
   marking: String,
   provenance: String,
-  estimatedvalue: String,
+  estimatedvalue: Number,
   evidenceofownership: String,
   nftimage: String,
   nftimage1: String,
@@ -34,11 +34,7 @@ const NftProfileDetail = new mongoose.Schema({
   validateAmount: String,
   nftcreationdate: String,
   burnNFTstatus: String,
-  swapStatus: {
-    type: String,
-    enum: ["not started", "pending", "swaped"],
-    default: "not started",
-  },
+  swapStatus: String,
   sellstatus: {
     type: String,
     enum: ["not started", "pending", "sold"],
