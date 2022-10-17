@@ -64,7 +64,8 @@ exports.createNft = asyncHandler(async (req, res, next) => {
       mpsetasbundle: "",
       mpreserveforspecificbuyer: "",
       mpfees: "",
-      swapStatus: "not started"
+      swapStatus: "not started",
+      burnNFTstatus: "False"
 
     })
     await newNFT.save();

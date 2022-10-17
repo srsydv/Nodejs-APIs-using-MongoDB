@@ -51,7 +51,7 @@ const NftProfileDetail = new mongoose.Schema({
   redeemNFTstatus: String,
   redeemNFTrequest: {
     type: String,
-    enum: ["false", "true", "accepted"],
+    enum: ["false", "true", "accepted", "redeemed"],
     default: "false",
   },
 });

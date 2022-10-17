@@ -28,4 +28,8 @@ router.route("/validateNFT").put(access_token.authenticateJWT, validatorControll
 // Validator's validated NFTs
 router.route("/MyValidatedNFT").get(access_token.authenticateJWT, advancedResults(NftprofiledetailModel), validatorController.MyValidatedNFT);
 
+//Accept redeem request by validator
+router.route("/acceptRedeemReq").post(access_token.authenticateJWT, validatorController.acceptRedeemReq);
+
+
 module.exports = router;

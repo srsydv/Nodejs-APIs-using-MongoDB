@@ -187,6 +187,7 @@ exports.validateNFT = async (req, res) => {
     var user = jwt.decode(token, process.env.JWT_SECRET)
     const validatorDetail = await validatorHelper.validatorDetail(user.address);
     const NFTdetail = await userHelper.NFTdetails(req.body.tokenid);
+    const userDetail = await userHelper.userDetail(user.address);
 
     let result = await nftForValidation.updateMany(
       {
@@ -215,9 +216,9 @@ exports.validateNFT = async (req, res) => {
       validatorusername: validatorDetail[0].username,
       Message: "NFT Validated",
       DateAndTime: moment().format(),
-      username: NFTdetail[0].username,
-      name: NFTdetail[0].name,
-      userwltaddress: user.address,
+      username: NFTdetail[0].ownerusername,
+      name: NFTdetail[0].ownername,
+      userwltaddress: NFTdetail[0].ownerwltaddress,
       validateAmount: req.body.validateAmount
 
     })
@@ -288,5 +289,57 @@ exports.MyValidatedNFT = async (req, res) => {
       message: "Failed",
     });
   }
+
+}
+
+
+exports.acceptRedeemReq = async (req, res) => {
+try {
+  
+  const authHeader = req.headers.authorization;
+    const token = authHeader.split(' ')[1];
+    var user = jwt.decode(token, process.env.JWT_SECRET)
+    const validatorDetail = await validatorHelper.validatorDetail(user.address);
+    const NFTdetail = await userHelper.NFTdetails(req.body.tokenid);
+    const userDetail = await userHelper.userDetail(user.address);
+
+
+    let newActivityForUser = new userActivityModel({
+
+      assetname: req.body.assetname,
+      tokenid: req.body.tokenid,
+      validatorwltaddress: user.address,
+      validatorname: validatorDetail[0].name,
+      validatorusername: validatorDetail[0].username,
+      Message: "Request Accepted for Redeem",
+      DateAndTime: moment().format(),
+      username: NFTdetail[0].ownerusername,
+      name: NFTdetail[0].ownername,
+      userwltaddress: NFTdetail[0].ownerwltaddress
+    })
+    await newActivityForUser.save();
+
+    await NFTprofileDetailModel.updateMany(
+      {
+        tokenid: req.body.tokenid
+      },
+      {
+        $set:
+        {
+          redeemNFTrequest: "accepted"
+        }
+      }
+    )
+  
+  res.json({
+      message:"Request Accepted"
+  })
+} catch (error) {
+  res.status(400).json({
+    success: false,
+    data: [],
+    message: "Cant Accept request",
+  });
+}
 
 }

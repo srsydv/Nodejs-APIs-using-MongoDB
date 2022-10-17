@@ -45,5 +45,62 @@ exports.listNFTforMP = async (req, res) => {
 
 
 exports.MarketPlaceNFTs = async (req, res) => {
+  // try {
+    let query;
 
-}
+    const { to, from, blockchain="", assettype="", sortby } = req.query;
+    
+    let queryStr = {
+      blockchain,
+      typeofart: assettype,
+      estimatedvalue: { $gte: from, $lte: to },
+    };
+
+    query = NFTprofileDetailModel.find(queryStr);
+
+    if (sortby) {
+      const sortBy = sortby.split(",").join(" ");
+      query = query.sort(sortBy);
+    } else {
+      query = query.sort("-createdAt");
+    }
+
+    const page = parseInt(req.query.page, 10) || 1;
+    const limit = parseInt(req.query.limit, 10) || 30;
+    const startIndex = (page - 1) * limit;
+    const endIndex = page * limit;
+    const total = await NFTprofileDetailModel.countDocuments(queryStr);
+    query = query.skip(startIndex).limit(limit);
+
+    const results = await query;
+
+    const pagination = {};
+
+    if (endIndex < total) {
+      pagination.next = {
+        page: page + 1,
+        limit,
+      };
+    }
+
+    if (startIndex > 0) {
+      pagination.prev = {
+        page: page - 1,
+        limit,
+      };
+    }
+
+    return res.status(200).json({
+      success: true,
+      count: results.length,
+      pagination,
+      data: results,
+    });
+  // } catch (err) {
+  //   res.status(400).json({
+  //     success: false,
+  //     data: [],
+  //     message: "Failed to execute",
+  //   });
+  // }
+};

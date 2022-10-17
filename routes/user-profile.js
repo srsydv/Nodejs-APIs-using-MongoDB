@@ -15,7 +15,7 @@ router.route("/editProfile").post(access_token.authenticateJWT, userController.e
 router.route("/NFTforValidation").post(access_token.authenticateJWT, userController.NFTforValidation);
 
 // Search NFT by name
-// router.route("/SearchNFTbyname").get(access_token.authenticateJWT,advancedResults(NftprofiledetailModel),userController.SearchNFTbyname);
+router.route("/SearchNFTbyname").get(userController.SearchNFTbyname);
 
 // On Sale NFTs of single user
 router.route("/onSaleNFTs").get(access_token.authenticateJWT, advancedResults(NftprofiledetailModel), userController.onSaleNFTs);
@@ -28,5 +28,20 @@ router.route("/reqForSwapAsset").post(access_token.authenticateJWT, userControll
 
 // Accept Swap Request
 router.route("/acceptSwapRequest").post(access_token.authenticateJWT, userController.acceptSwapRequest);
+
+//Cancle Swap Request
+router.route("/cancleSwapRequest").post(access_token.authenticateJWT, userController.cancleSwapRequest);
+
+//Burn NFT
+router.route("/burnNFT").post(access_token.authenticateJWT, userController.burnNFT);
+
+// Send redeem request to validator
+router.route("/sendredeemreq").post(access_token.authenticateJWT, userController.sendredeemreq);
+
+//Redeem NFT
+router.route("/redeemNFT").post(access_token.authenticateJWT, userController.redeemNFT);
+
+//Transfer NFT
+router.route("/transferNFT").post(access_token.authenticateJWT, userController.transferNFT);
 
 module.exports = router;
