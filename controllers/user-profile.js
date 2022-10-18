@@ -3,7 +3,7 @@ const UserModel = require("../models/User-profile");
 const NftModel = require("../models/Nftprofiledetail");
 const validatorModel = require("../models/Validator-profile");
 const validatorActivity = require("../models/validator-activity")
-const userActivity = require("../models/user-activity")
+const UserActivity = require("../models/user-activity")
 const NFTforValidationModel = require("../models/NftForValidation");
 const NFTprofileDetailModel = require("../models/Nftprofiledetail");
 const userActivityModel = require("../models/user-activity");
@@ -277,8 +277,36 @@ exports.buyNFT = async (req, res) => {
     const token = authHeader.split(' ')[1];
     var user = jwt.decode(token, process.env.JWT_SECRET)
     const userDetail = await userHelper.userDetail(user.address);
+    const NFTdetail = await userHelper.NFTdetails(req.body.tokenid);
 
-    let result = await NFTforValidationModel.updateMany(
+    let ActivityForUser = new userActivityModel({
+
+      assetname: req.body.assetname,
+      tokenid: req.body.tokenid,
+      Message: "you baught nft",
+      DateAndTime: moment().format(),
+      username: userDetail[0].username,
+      name: userDetail[0].name,
+      userwltaddress: user.address,
+      buyamount: req.body.buyamount
+    })
+    await ActivityForUser.save();
+    console.log("sss", user.address)
+
+    let newActivityForUser = new userActivityModel({
+
+      assetname: req.body.assetname,
+      tokenid: req.body.tokenid,
+      Message: "your nft sold",
+      DateAndTime: moment().format(),
+      username: NFTdetail[0].ownerusername,
+      name: NFTdetail[0].ownername,
+      userwltaddress: NFTdetail[0].ownerwltaddress,
+      buyamount: req.body.buyamount
+    })
+    await newActivityForUser.save();
+
+    let result = await NFTprofileDetailModel.updateMany(
       {
         tokenid: req.body.tokenid,
         assetname: req.body.assetname
@@ -290,11 +318,15 @@ exports.buyNFT = async (req, res) => {
           sellstatus: 'sold',
           ownername: userDetail[0].name,
           ownerwltaddress: user.address,
-          ownerusername: userDetail[0].username
+          ownerusername: userDetail[0].username,
+          buyamount: req.body.buyamount
         }
       }
     )
-    res.send(result);
+
+    res.send({
+      Result: "You Baught this NFT"
+    });
   } catch (error) {
     res.status(400).json({
       success: false,
@@ -801,7 +833,6 @@ exports.transferNFT = async (req, res) => {
     const userDetail = await userHelper.userDetail(user.address);
     const userDetailOfTransferedAdd = await userHelper.userDetail((req.body.nfttransferaddress).toLowerCase());
     const NFTdetail = await userHelper.NFTdetails(req.body.tokenid);
-console.log("hh",userDetailOfTransferedAdd[0])
 
     let ActivityForUser = new userActivityModel({
 
@@ -848,8 +879,154 @@ console.log("hh",userDetailOfTransferedAdd[0])
       }
     )
 
-  res.send({ result: "NFT Transfered, Successfully" })
+    res.send({ result: "NFT Transfered, Successfully" })
   } catch (error) {
-    console.log("dd",error)
+    console.log("dd", error)
+  }
+}
+
+exports.getAllActivities = asyncHandler(async (req, res, next) => {
+  try {
+    let query;
+
+    const {activity, sortby="latest"} = req.query;
+
+    let queryStr = {
+      Message: activity
+    }
+
+    query = userActivityModel.find(queryStr);
+
+    if(sortby === "oldest"){
+      query = query.sort("createdAt");
+    }else{
+      query = query.sort("-createdAt");
+    }
+
+    const page = parseInt(req.query.page, 10) || 1;
+    const limit = parseInt(req.query.limit, 10) || 30;
+    const startIndex = (page - 1) * limit;
+    const endIndex = page * limit;
+    const total = await NFTprofileDetailModel.countDocuments(queryStr);
+    query = query.skip(startIndex).limit(limit);
+
+    const results = await query;
+
+    const pagination = {};
+
+    if (endIndex < total) {
+      pagination.next = {
+        page: page + 1,
+        limit,
+      };
+    }
+
+    if (startIndex > 0) {
+      pagination.prev = {
+        page: page - 1,
+        limit,
+      };
+    }
+
+    return res.status(200).json({
+      success: true,
+      count: results.length,
+      pagination: results.length ? pagination : {},
+      data: results,
+    });
+  } catch (err) {
+    res.status(400).json({
+      success: false,
+      data: [],
+      message: "Failed to execute",
+    });
+  }
+});
+
+
+
+exports.makeoffer = async (req, res) => {
+  try {
+    const authHeader = req.headers.authorization;
+    const token = authHeader.split(' ')[1];
+    var user = jwt.decode(token, process.env.JWT_SECRET)
+
+    const userDetail = await userHelper.userDetail(user.address);
+    const NFTdetail = await userHelper.NFTdetails(req.body.tokenid);
+
+    let ActivityForUser = new userActivityModel({
+
+      assetname: req.body.assetname,
+      tokenid: req.body.tokenid,
+      Message: "make offer",
+      DateAndTime: moment().format(),
+      username: NFTdetail[0].ownerusername,
+      name: NFTdetail[0].ownername,
+      userwltaddress: NFTdetail[0].ownerwltaddress,
+      makeofferamount: req.body.makeofferamount
+    })
+    await ActivityForUser.save();
+
+    let ActivityForOtherUser = new userActivityModel({
+
+      assetname: req.body.assetname,
+      tokenid: req.body.tokenid,
+      Message: "you made offer",
+      DateAndTime: moment().format(),
+      username: userDetail[0].username,
+      name: userDetail[0].name,
+      userwltaddress: user.address,
+      makeofferamount: req.body.makeofferamount
+    })
+    await ActivityForOtherUser.save();
+
+    res.send({ result: "Offer made, Successfully" })
+  } catch (error) {
+    console.log("dd", error)
+  }
+}
+
+
+
+
+
+exports.placeBid = async (req, res) => {
+  try {
+    const authHeader = req.headers.authorization;
+    const token = authHeader.split(' ')[1];
+    var user = jwt.decode(token, process.env.JWT_SECRET)
+
+    const userDetail = await userHelper.userDetail(user.address);
+    const NFTdetail = await userHelper.NFTdetails(req.body.tokenid);
+
+    let ActivityForUser = new userActivityModel({
+
+      assetname: req.body.assetname,
+      tokenid: req.body.tokenid,
+      Message: "you got a bid",
+      DateAndTime: moment().format(),
+      username: NFTdetail[0].ownerusername,
+      name: NFTdetail[0].ownername,
+      userwltaddress: NFTdetail[0].ownerwltaddress,
+      biddingamount: req.body.biddingamount
+    })
+    await ActivityForUser.save();
+
+    let ActivityForOtherUser = new userActivityModel({
+
+      assetname: req.body.assetname,
+      tokenid: req.body.tokenid,
+      Message: "you made bid",
+      DateAndTime: moment().format(),
+      username: userDetail[0].username,
+      name: userDetail[0].name,
+      userwltaddress: user.address,
+      biddingamount: req.body.biddingamount
+    })
+    await ActivityForOtherUser.save();
+
+    res.send({ result: "Bid Done, Successfully" })
+  } catch (error) {
+    console.log("dd", error)
   }
 }

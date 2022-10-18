@@ -126,10 +126,10 @@ exports.Authlogin = async function (req, res) {
 exports.validatorlogin = async function (req, res) {
     try {
         const clm = {
-            address: req.body.address
+            address: (req.body.address).toLowerCase()
         }
         const authuser1 = {
-            address: req.body.address,
+            address: (req.body.address).toLowerCase(),
             hostname: "",
             ip: "",
             lastRequestAt: req.session._lastRequestAt
@@ -156,9 +156,10 @@ exports.validatorlogin = async function (req, res) {
         })
 
     } catch (error) {
+        console.log("eee", error)
         res.status(400).json({
             success: false,
-            data: [],
+            data: error,
             message: "Failed to execute validator Login",
         });
     }

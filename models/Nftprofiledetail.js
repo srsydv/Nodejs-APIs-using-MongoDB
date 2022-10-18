@@ -48,12 +48,16 @@ const NftProfileDetail = new mongoose.Schema({
   mpsetasbundle: String,
   mpreserveforsp: String,
   mpfees: String,
+  mpstartingprice: String,
+  mpendingprice: String,
+  buyamount: String,
   redeemNFTstatus: String,
+  listonmarketplace: String,
   redeemNFTrequest: {
     type: String,
     enum: ["false", "true", "accepted", "redeemed"],
     default: "false",
   },
-});
+},{ timestamps: true });
 
 module.exports = mongoose.model("NftProfileDetail", NftProfileDetail);

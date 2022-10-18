@@ -21,7 +21,7 @@ router.route("/SearchNFTbyname").get(userController.SearchNFTbyname);
 router.route("/onSaleNFTs").get(access_token.authenticateJWT, advancedResults(NftprofiledetailModel), userController.onSaleNFTs);
 
 //Buy NFT by User
-router.route("/buyNFT").post(access_token.authenticateJWT, userController.buyNFT);
+router.route("/buyNFT").put(access_token.authenticateJWT, userController.buyNFT);
 
 // Send Swap Request
 router.route("/reqForSwapAsset").post(access_token.authenticateJWT, userController.reqForSwapAsset);
@@ -43,5 +43,14 @@ router.route("/redeemNFT").post(access_token.authenticateJWT, userController.red
 
 //Transfer NFT
 router.route("/transferNFT").post(access_token.authenticateJWT, userController.transferNFT);
+
+//All Activities of user
+router.route("/AllActivities").get(userController.getAllActivities);
+
+// Make Offer
+router.route("/makeoffer").post(access_token.authenticateJWT, userController.makeoffer);
+
+//Place Bid
+router.route("/placeBid").post(access_token.authenticateJWT, userController.placeBid);
 
 module.exports = router;

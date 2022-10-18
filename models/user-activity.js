@@ -20,7 +20,10 @@ nfttransferaddress: String,
 nfttransferusername: String,
 nfttransfername: String,
 DateAndTime: String,
+buyamount: String,
+makeofferamount: String,
+biddingamount: String,
 
-});
+},{ timestamps: true });
 
 module.exports = mongoose.model("userActivity", userActivity);

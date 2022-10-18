@@ -15,6 +15,9 @@ router.route("/listNFTforMP").put(access_token.authenticateJWT, NFTmarketplace.l
 // Pagiantion of NFT for MarketPlace
 router.route("/MarketPlaceNFTs").get(NFTmarketplace.MarketPlaceNFTs);
 
+// Place Bid
+// router.route("/placeBid").put(access_token.authenticateJWT, NFTmarketplace.placeBid);
+
 
 
 module.exports = router;

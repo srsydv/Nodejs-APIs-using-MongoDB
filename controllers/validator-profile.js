@@ -343,3 +343,61 @@ try {
 }
 
 }
+
+exports.getAllActivities = asyncHandler(async (req, res, next) => {
+  try {
+    let query;
+
+    const {activity, sortby="latest"} = req.query;
+
+    let queryStr = {
+      Message: activity
+    }
+
+    query = validatorActivityModel.find(queryStr);
+
+    if(sortby === "oldest"){
+      query = query.sort("createdAt");
+    }else{
+      query = query.sort("-createdAt");
+    }
+
+    const page = parseInt(req.query.page, 10) || 1;
+    const limit = parseInt(req.query.limit, 10) || 30;
+    const startIndex = (page - 1) * limit;
+    const endIndex = page * limit;
+    const total = await NFTprofileDetailModel.countDocuments(queryStr);
+    query = query.skip(startIndex).limit(limit);
+
+    const results = await query;
+
+    const pagination = {};
+
+    if (endIndex < total) {
+      pagination.next = {
+        page: page + 1,
+        limit,
+      };
+    }
+
+    if (startIndex > 0) {
+      pagination.prev = {
+        page: page - 1,
+        limit,
+      };
+    }
+
+    return res.status(200).json({
+      success: true,
+      count: results.length,
+      pagination: results.length ? pagination : {},
+      data: results,
+    });
+  } catch (err) {
+    res.status(400).json({
+      success: false,
+      data: [],
+      message: "Failed to execute",
+    });
+  }
+});
