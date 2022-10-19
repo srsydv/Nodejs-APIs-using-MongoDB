@@ -175,7 +175,7 @@ exports.NFTforValidation = async function (req, res) {
       creatername: NFTdetail[0].creatername,
       createrwltaddress: NFTdetail[0].createrwltaddress,
       userWltAddress: user.address,
-      Message: "Validation Request",
+      message: "Validation Request",
       DateAndTime: moment().format()
 
     })
@@ -283,7 +283,7 @@ exports.buyNFT = async (req, res) => {
 
       assetname: req.body.assetname,
       tokenid: req.body.tokenid,
-      Message: "you baught nft",
+      message: "you baught nft",
       DateAndTime: moment().format(),
       username: userDetail[0].username,
       name: userDetail[0].name,
@@ -297,7 +297,7 @@ exports.buyNFT = async (req, res) => {
 
       assetname: req.body.assetname,
       tokenid: req.body.tokenid,
-      Message: "your nft sold",
+      message: "your nft sold",
       DateAndTime: moment().format(),
       username: NFTdetail[0].ownerusername,
       name: NFTdetail[0].ownername,
@@ -351,7 +351,7 @@ exports.reqForSwapAsset = async (req, res) => {
       assetname: req.body.assetname,
       tokenid: req.body.tokenid,
       // Here will be out sign for swap request
-      Message: "Swap Request OUT",
+      message: "Swap Request OUT",
       DateAndTime: moment().format(),
       username: userDetail[0].username,
       name: userDetail[0].name,
@@ -370,7 +370,7 @@ exports.reqForSwapAsset = async (req, res) => {
 
       assetname: req.body.toswapassetname,
       tokenid: req.body.toswaptokenid,
-      Message: "Swap Request IN",
+      message: "Swap Request IN",
       DateAndTime: moment().format(),
       username: NFTdetail[0].username,
       name: NFTdetail[0].name,
@@ -435,7 +435,7 @@ exports.acceptSwapRequest = async (req, res) => {
 
       assetname: req.body.assetname,
       tokenid: req.body.tokenid,
-      Message: "You Accepted swap Request",
+      message: "You Accepted swap Request",
       DateAndTime: moment().format(),
       username: userDetail[0].username,
       name: userDetail[0].name,
@@ -453,7 +453,7 @@ exports.acceptSwapRequest = async (req, res) => {
 
       assetname: req.body.toswapassetname,
       tokenid: req.body.toswaptokenid,
-      Message: "Your Swap Request is Accepted",
+      message: "Your Swap Request is Accepted",
       DateAndTime: moment().format(),
       username: NFTdetail[0].ownerusername,
       name: NFTdetail[0].ownername,
@@ -526,7 +526,7 @@ exports.cancleSwapRequest = async (req, res) => {
 
       assetname: req.body.assetname,
       tokenid: req.body.tokenid,
-      Message: "Swap Request Cancled",
+      message: "Swap Request Cancled",
       DateAndTime: moment().format(),
       username: userDetail[0].username,
       name: userDetail[0].name,
@@ -545,7 +545,7 @@ exports.cancleSwapRequest = async (req, res) => {
 
       assetname: req.body.toswapassetname,
       tokenid: req.body.toswaptokenid,
-      Message: "Swap Request Cancled",
+      message: "Swap Request Cancled",
       DateAndTime: moment().format(),
       username: NFTdetail[0].ownerusername,
       name: NFTdetail[0].ownername,
@@ -618,7 +618,7 @@ exports.burnNFT = async (req, res) => {
 
       assetname: req.body.assetname,
       tokenid: req.body.tokenid,
-      Message: "NFT burned",
+      message: "NFT burned",
       DateAndTime: moment().format(),
       username: userDetail[0].username,
       name: userDetail[0].name,
@@ -647,7 +647,7 @@ exports.burnNFT = async (req, res) => {
       creatername: NFTdetail[0].creatername,
       createrwltaddress: NFTdetail[0].createrwltaddress,
       userWltAddress: user.address,
-      Message: "Burned",
+      message: "Burned",
       DateAndTime: moment().format()
 
     })
@@ -709,7 +709,7 @@ exports.sendredeemreq = async (req, res) => {
       creatername: NFTdetail[0].creatername,
       createrwltaddress: NFTdetail[0].createrwltaddress,
       userWltAddress: user.address,
-      Message: "asset request",
+      message: "asset request",
       DateAndTime: moment().format()
 
     })
@@ -759,7 +759,7 @@ exports.redeemNFT = async (req, res) => {
 
       assetname: req.body.assetname,
       tokenid: req.body.tokenid,
-      Message: "redeem nft",
+      message: "redeem nft",
       DateAndTime: moment().format(),
       //Asset NFT Reciever (You)
       username: userDetail[0].username,
@@ -788,7 +788,7 @@ exports.redeemNFT = async (req, res) => {
       creatername: NFTdetail[0].creatername,
       createrwltaddress: NFTdetail[0].createrwltaddress,
       userWltAddress: user.address,
-      Message: "redeem nft",
+      message: "redeem nft",
       DateAndTime: moment().format()
 
     })
@@ -838,7 +838,7 @@ exports.transferNFT = async (req, res) => {
 
       assetname: req.body.assetname,
       tokenid: req.body.tokenid,
-      Message: "NFT Transfered",
+      message: "NFT Transfered",
       DateAndTime: moment().format(),
       username: userDetail[0].username,
       name: userDetail[0].name,
@@ -853,7 +853,7 @@ exports.transferNFT = async (req, res) => {
 
       assetname: req.body.assetname,
       tokenid: req.body.tokenid,
-      Message: "NFT Received",
+      message: "NFT Received",
       DateAndTime: moment().format(),
       username: userDetailOfTransferedAdd[0].username,
       name: userDetailOfTransferedAdd[0].name,
@@ -887,19 +887,24 @@ exports.transferNFT = async (req, res) => {
 
 exports.getAllActivities = asyncHandler(async (req, res, next) => {
   try {
+    const authHeader = req.headers.authorization;
+    const token = authHeader.split(' ')[1];
+    var user = jwt.decode(token, process.env.JWT_SECRET)
+
     let query;
 
-    const {activity, sortby="latest"} = req.query;
+    const { activity, sortby = "latest" } = req.query;
 
     let queryStr = {
-      Message: activity
+      message: activity,
+      userwltaddress: user.address
     }
 
     query = userActivityModel.find(queryStr);
 
-    if(sortby === "oldest"){
+    if (sortby === "oldest") {
       query = query.sort("createdAt");
-    }else{
+    } else {
       query = query.sort("-createdAt");
     }
 
@@ -931,8 +936,9 @@ exports.getAllActivities = asyncHandler(async (req, res, next) => {
     return res.status(200).json({
       success: true,
       count: results.length,
+      totalCount: total,
       pagination: results.length ? pagination : {},
-      data: results,
+      data: results
     });
   } catch (err) {
     res.status(400).json({
@@ -957,7 +963,7 @@ exports.makeoffer = async (req, res) => {
 
       assetname: req.body.assetname,
       tokenid: req.body.tokenid,
-      Message: "make offer",
+      message: "make offer",
       DateAndTime: moment().format(),
       username: NFTdetail[0].ownerusername,
       name: NFTdetail[0].ownername,
@@ -970,7 +976,7 @@ exports.makeoffer = async (req, res) => {
 
       assetname: req.body.assetname,
       tokenid: req.body.tokenid,
-      Message: "you made offer",
+      message: "you made offer",
       DateAndTime: moment().format(),
       username: userDetail[0].username,
       name: userDetail[0].name,
@@ -999,12 +1005,14 @@ exports.placeBid = async (req, res) => {
 
       assetname: req.body.assetname,
       tokenid: req.body.tokenid,
-      Message: "you got a bid",
+      message: "you got a bid",
       DateAndTime: moment().format(),
       username: NFTdetail[0].ownerusername,
       name: NFTdetail[0].ownername,
       userwltaddress: NFTdetail[0].ownerwltaddress,
-      biddingamount: req.body.biddingamount
+      biddingamount: req.body.biddingamount,
+      bidid: req.body.bidid,
+      bidstatus: "panding"
     })
     await ActivityForUser.save();
 
@@ -1012,12 +1020,14 @@ exports.placeBid = async (req, res) => {
 
       assetname: req.body.assetname,
       tokenid: req.body.tokenid,
-      Message: "you made bid",
+      message: "you made bid",
       DateAndTime: moment().format(),
       username: userDetail[0].username,
       name: userDetail[0].name,
       userwltaddress: user.address,
-      biddingamount: req.body.biddingamount
+      biddingamount: req.body.biddingamount,
+      bidid: req.body.bidid,
+      bidstatus: "panding"
     })
     await ActivityForOtherUser.save();
 
@@ -1027,13 +1037,91 @@ exports.placeBid = async (req, res) => {
   }
 }
 
+
+
+exports.acceptBid = async (req, res) => {
+  try {
+    const authHeader = req.headers.authorization;
+    const token = authHeader.split(' ')[1];
+    var user = jwt.decode(token, process.env.JWT_SECRET)
+
+    const clm = {
+      bidid: req.body.bidid,
+      message: "you made bid"
+    }
+
+    const userDetail = await userHelper.userDetail(user.address);
+    const NFTdetail = await userHelper.NFTdetails(req.body.tokenid);
+    const bidDetail = await userHelper.bidDetail(clm);
+    let ActivityForUser = new userActivityModel({
+
+      assetname: req.body.assetname,
+      tokenid: req.body.tokenid,
+      message: "you bid got accepted",
+      DateAndTime: moment().format(),
+      username: bidDetail[0].username,
+      name: bidDetail[0].name,
+      userwltaddress: bidDetail[0].userwltaddress,
+      biddingamount: req.body.biddingamount,
+      bidid: req.body.bidid,
+      bidstatus: "accepted"
+    })
+    await ActivityForUser.save();
+
+    let ActivityForOtherUser = new userActivityModel({
+
+      assetname: req.body.assetname,
+      tokenid: req.body.tokenid,
+      message: "you accepted bid",
+      DateAndTime: moment().format(),
+      username: userDetail[0].username,
+      name: userDetail[0].name,
+      userwltaddress: user.address,
+      biddingamount: req.body.biddingamount,
+      bidid: req.body.bidid,
+      bidstatus: "accepted"
+    })
+    await ActivityForOtherUser.save();
+
+    await NFTprofileDetailModel.updateMany(
+      {
+        tokenid: req.body.tokenid,
+        assetname: req.body.assetname
+      },
+      {
+        $set:
+        {
+          ownerusername: bidDetail[0].username,
+          ownername: bidDetail[0].name,
+          ownerwltaddress: bidDetail[0].userwltaddress
+        }
+      }
+    )
+    const res1 = await userActivityModel.findOneAndDelete(
+      {
+        userwltaddress: bidDetail[0].userwltaddress,
+        bidid: req.body.bidid
+      }
+    )
+    res.send({ result: "Bid Accepted, Successfully"})
+  } catch (error) {
+    console.log("dd", error)
+    res.status(400).json({
+      success: false,
+      data: [],
+      message: "Failed to execute",
+    });
+  }
+}
+
+
 exports.getFavouriteNfts = asyncHandler(async (req, res, next) => {
   try {
     const authHeader = req.headers.authorization;
     const token = authHeader.split(' ')[1];
     let user = jwt.decode(token, process.env.JWT_SECRET);
-    
-    const nfts = await UserModel.find({address: user.address}).populate("favourite");
+
+    const nfts = await UserModel.find({ address: user.address }).populate("favourite");
     if (!nfts) {
       res.json({
         success: true,
@@ -1044,7 +1132,7 @@ exports.getFavouriteNfts = asyncHandler(async (req, res, next) => {
 
     res.status(200).json({
       success: true,
-      count: nfts.length,
+      totalCount: nfts.length,
       data: nfts,
     });
 
@@ -1065,20 +1153,20 @@ exports.addFavouriteNft = asyncHandler(async (req, res, next) => {
 
     const { id } = req.body;
 
-    const favouriteNfts = await UserModel.find({address: user.address}).select('favourite');
-    
-    let data = favouriteNfts[0].favourite.length ? favouriteNfts[0].favourite: [];
-    if(data.length){
-      if(data.includes(id)){
+    const favouriteNfts = await UserModel.find({ address: user.address }).select('favourite');
+
+    let data = favouriteNfts[0].favourite.length ? favouriteNfts[0].favourite : [];
+    if (data.length) {
+      if (data.includes(id)) {
         data = data.filter(d => d.toString() !== id);
-      }else{
+      } else {
         data.push(id);
       }
-    }else{
+    } else {
       data.push(id);
     }
 
-    const nft = await UserModel.findOneAndUpdate({address: user.address}, {favourite: data});
+    const nft = await UserModel.findOneAndUpdate({ address: user.address }, { favourite: data });
 
     res.status(200).json({
       success: true

@@ -45,13 +45,16 @@ router.route("/redeemNFT").post(access_token.authenticateJWT, userController.red
 router.route("/transferNFT").post(access_token.authenticateJWT, userController.transferNFT);
 
 //All Activities of user
-router.route("/AllActivities").get(userController.getAllActivities);
+router.route("/AllActivities").get(access_token.authenticateJWT,userController.getAllActivities);
 
 // Make Offer
 router.route("/makeoffer").post(access_token.authenticateJWT, userController.makeoffer);
 
 //Place Bid
 router.route("/placeBid").post(access_token.authenticateJWT, userController.placeBid);
+
+//Accept Bid
+router.route("/acceptBid").post(access_token.authenticateJWT, userController.acceptBid);
 
 // Favourite NFTs
 router.route("/favouriteNfts").get(access_token.authenticateJWT, userController.getFavouriteNfts).patch(access_token.authenticateJWT, userController.addFavouriteNft);

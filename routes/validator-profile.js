@@ -31,7 +31,8 @@ router.route("/MyValidatedNFT").get(access_token.authenticateJWT, advancedResult
 //Accept redeem request by validator
 router.route("/acceptRedeemReq").post(access_token.authenticateJWT, validatorController.acceptRedeemReq);
 
-router.route("/AllActivitiesofValidator").get(validatorController.getAllActivities);
+// Activity for Validator
+router.route("/AllActivitiesofValidator").get(access_token.authenticateJWT,validatorController.getAllActivities);
 
 // Favourite NFTs
 router.route("/favouriteNfts").get(access_token.authenticateJWT, validatorController.getFavouriteNfts).patch(access_token.authenticateJWT, validatorController.addFavouriteNft);

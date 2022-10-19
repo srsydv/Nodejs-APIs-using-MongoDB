@@ -12,7 +12,7 @@ swaprequesttousername: String,
 username: String,
 name: String,
 userwltaddress: String,
-Message: String,
+message: String,
 validatorwltaddress: String,
 validatorname: String,
 validatorusername: String,
@@ -23,6 +23,8 @@ DateAndTime: String,
 buyamount: String,
 makeofferamount: String,
 biddingamount: String,
+bidid: Number,
+bidstatus: String,
 
 },{ timestamps: true });
 

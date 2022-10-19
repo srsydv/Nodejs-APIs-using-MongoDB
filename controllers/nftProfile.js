@@ -64,6 +64,7 @@ exports.createNft = asyncHandler(async (req, res, next) => {
       mpreserveforspecificbuyer: "",
       mpfees: "",
       swapStatus: "not started",
+      bidstatus: "not started",
       burnNFTstatus: "false",
       listonmarketplace: "false"
 
@@ -145,6 +146,7 @@ exports.getUserNfts = asyncHandler(async (req, res, next) => {
     return res.status(200).json({
       success: true,
       count: results.length,
+      totalCount: total,
       pagination: results.length ? pagination : {},
       data: results,
     });
@@ -203,6 +205,7 @@ exports.getUserCreatedNfts = asyncHandler(async (req, res, next) => {
     return res.status(200).json({
       success: true,
       count: results.length,
+      totalCount: total,
       pagination: results.length ? pagination : {},
       data: results,
     });
@@ -275,6 +278,7 @@ exports.getMyValidatedNfts = asyncHandler(async (req, res, next) => {
     return res.status(200).json({
       success: true,
       count: results.length,
+      totalCount: total,
       pagination: results.length ? pagination : {},
       data: results,
     });
@@ -343,6 +347,7 @@ exports.getValidatedNfts = asyncHandler(async (req, res, next) => {
     return res.status(200).json({
       success: true,
       count: results.length,
+      totalCount: total,
       pagination: results.length ? pagination : {},
       data: results,
     });

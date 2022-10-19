@@ -14,7 +14,7 @@ const validatorActivity = new mongoose.Schema(
     creatername: String,
     createrwltaddress: String,
     userWltAddress: String,
-    Message: String,
+    message: String,
     DateAndTime: String,
     buyamount: String,
   },

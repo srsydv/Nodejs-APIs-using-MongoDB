@@ -13,12 +13,16 @@ router.route("/createNFT").get(advancedResults(NftModel), NFTprofileController.g
 // NFT Detail By Tokenid
 router.route("/NFTdetail").get(access_token.authenticateJWT, NFTprofileController.NFTdetail);
 
-router.route("/userNFTs").get(NFTprofileController.getUserNfts);
+// All NFTs of single user for public Dashboard
+router.route("/userNFTs").get(access_token.authenticateJWT,NFTprofileController.getUserNfts);
 
-router.route("/userCreatedNFTs").get(NFTprofileController.getUserCreatedNfts);
+// Created NFTs of single user for Dashboard
+router.route("/userCreatedNFTs").get(access_token.authenticateJWT,NFTprofileController.getUserCreatedNfts);
 
+// Validated NFT of a single user for personal Dashboard
 router.route('/myValidatedNFTs').get(access_token.authenticateJWT, NFTprofileController.getMyValidatedNfts);
 
-router.route('/userValidatedNFTs').get(NFTprofileController.getValidatedNfts);
+// Validated NFT of a single user for public Dashboard
+router.route('/userValidatedNFTs').get(access_token.authenticateJWT,NFTprofileController.getValidatedNfts);
 
 module.exports = router;

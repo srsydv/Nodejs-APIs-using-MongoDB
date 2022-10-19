@@ -213,7 +213,7 @@ exports.validateNFT = async (req, res) => {
       validatorwltaddress: user.address,
       validatorname: validatorDetail[0].name,
       validatorusername: validatorDetail[0].username,
-      Message: "NFT Validated",
+      message: "NFT Validated",
       DateAndTime: moment().format(),
       username: NFTdetail[0].ownerusername,
       name: NFTdetail[0].ownername,
@@ -236,7 +236,7 @@ exports.validateNFT = async (req, res) => {
       creatername: NFTdetail[0].creatername,
       createrwltaddress: NFTdetail[0].createrwltaddress,
       userWltAddress: user.address,
-      Message: "Validation Request",
+      message: "Validation Request",
       DateAndTime: moment().format(),
       usernameofuser: NFTdetail[0].ownerusername,
       nameofuser: NFTdetail[0].ownername,
@@ -310,7 +310,7 @@ try {
       validatorwltaddress: user.address,
       validatorname: validatorDetail[0].name,
       validatorusername: validatorDetail[0].username,
-      Message: "Request Accepted for Redeem",
+      message: "Request Accepted for Redeem",
       DateAndTime: moment().format(),
       username: NFTdetail[0].ownerusername,
       name: NFTdetail[0].ownername,
@@ -345,12 +345,17 @@ try {
 
 exports.getAllActivities = asyncHandler(async (req, res, next) => {
   try {
+    const authHeader = req.headers.authorization;
+    const token = authHeader.split(' ')[1];
+    var user = jwt.decode(token, process.env.JWT_SECRET)
+
     let query;
 
     const {activity, sortby="latest"} = req.query;
 
     let queryStr = {
-      Message: activity
+      message: activity,
+      validatorwltaddress: user.address
     }
 
     query = validatorActivityModel.find(queryStr);
@@ -389,6 +394,7 @@ exports.getAllActivities = asyncHandler(async (req, res, next) => {
     return res.status(200).json({
       success: true,
       count: results.length,
+      totalCount: total,
       pagination: results.length ? pagination : {},
       data: results,
     });
@@ -418,7 +424,7 @@ exports.getFavouriteNfts = asyncHandler(async (req, res, next) => {
 
     res.status(200).json({
       success: true,
-      count: nfts.length,
+      totalCount: nfts.length,
       data: nfts,
     });
 
