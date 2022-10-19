@@ -48,16 +48,22 @@ exports.listNFTforMP = async (req, res) => {
 
 
 exports.MarketPlaceNFTs = async (req, res) => {
-  // try {
+  try {
   let query;
 
   const { to, from, blockchain = "", assettype = "", sortby } = req.query;
 
-  let queryStr = {
-    blockchain,
-    typeofart: assettype,
-    estimatedvalue: { $gte: from, $lte: to },
-  };
+  let queryStr = {};
+
+  if (blockchain === "" || assettype === "") {
+    queryStr = {};
+  } else {
+    queryStr = {
+      blockchain,
+      typeofart: assettype,
+      estimatedvalue: { $gte: from, $lte: to },
+    };
+  }
 
   query = NFTprofileDetailModel.find(queryStr);
 
@@ -99,11 +105,11 @@ exports.MarketPlaceNFTs = async (req, res) => {
     pagination,
     data: results,
   });
-  // } catch (err) {
-  //   res.status(400).json({
-  //     success: false,
-  //     data: [],
-  //     message: "Failed to execute",
-  //   });
-  // }
+  } catch (err) {
+    res.status(400).json({
+      success: false,
+      data: [],
+      message: "Failed to execute",
+    });
+  }
 };

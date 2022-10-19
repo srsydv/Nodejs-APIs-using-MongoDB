@@ -7,7 +7,6 @@ const jwt = require('jsonwebtoken')
 exports.getNfts = asyncHandler(async (req, res, next) => {
   try {
     res.status(200).json(res.advancedResults);
-
   } catch (err) {
     res.status(400).json({
       success: false,

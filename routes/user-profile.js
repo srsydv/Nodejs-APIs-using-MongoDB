@@ -53,4 +53,7 @@ router.route("/makeoffer").post(access_token.authenticateJWT, userController.mak
 //Place Bid
 router.route("/placeBid").post(access_token.authenticateJWT, userController.placeBid);
 
+// Favourite NFTs
+router.route("/favouriteNfts").get(access_token.authenticateJWT, userController.getFavouriteNfts).patch(access_token.authenticateJWT, userController.addFavouriteNft);
+
 module.exports = router;

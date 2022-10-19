@@ -151,8 +151,7 @@ exports.EditvalidatorProfile = async (req, res) => {
 
 exports.validatorsProfile = async (req, res) => {
   try {
-    let data = await ValidatorModel.find();
-    res.send({ result: data })
+    res.status(200).json(res.advancedResults);
   } catch (error) {
     res.status(400).json({
       success: false,
@@ -393,6 +392,72 @@ exports.getAllActivities = asyncHandler(async (req, res, next) => {
       pagination: results.length ? pagination : {},
       data: results,
     });
+  } catch (err) {
+    res.status(400).json({
+      success: false,
+      data: [],
+      message: "Failed to execute",
+    });
+  }
+});
+
+exports.getFavouriteNfts = asyncHandler(async (req, res, next) => {
+  try {
+    const authHeader = req.headers.authorization;
+    const token = authHeader.split(' ')[1];
+    let user = jwt.decode(token, process.env.JWT_SECRET);
+    
+    const nfts = await ValidatorModel.find({address: user.address}).populate("favourite");
+    if (!nfts) {
+      res.json({
+        success: true,
+        count: nfts.length,
+        data: [],
+      });
+    }
+
+    res.status(200).json({
+      success: true,
+      count: nfts.length,
+      data: nfts,
+    });
+
+  } catch (err) {
+    res.status(400).json({
+      success: false,
+      data: [],
+      message: "Failed to execute",
+    });
+  }
+});
+
+exports.addFavouriteNft = asyncHandler(async (req, res, next) => {
+  try {
+    const authHeader = req.headers.authorization;
+    const token = authHeader.split(' ')[1];
+    let user = jwt.decode(token, process.env.JWT_SECRET);
+
+    const { id } = req.body;
+
+    const favouriteNfts = await ValidatorModel.find({address: user.address}).select('favourite');
+    
+    let data = favouriteNfts[0].favourite.length ? favouriteNfts[0].favourite: [];
+    if(data.length){
+      if(data.includes(id)){
+        data = data.filter(d => d.toString() !== id);
+      }else{
+        data.push(id);
+      }
+    }else{
+      data.push(id);
+    }
+
+    const nft = await ValidatorModel.findOneAndUpdate({address: user.address}, {favourite: data});
+
+    res.status(200).json({
+      success: true
+    });
+
   } catch (err) {
     res.status(400).json({
       success: false,

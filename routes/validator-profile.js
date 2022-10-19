@@ -33,4 +33,7 @@ router.route("/acceptRedeemReq").post(access_token.authenticateJWT, validatorCon
 
 router.route("/AllActivitiesofValidator").get(validatorController.getAllActivities);
 
+// Favourite NFTs
+router.route("/favouriteNfts").get(access_token.authenticateJWT, validatorController.getFavouriteNfts).patch(access_token.authenticateJWT, validatorController.addFavouriteNft);
+
 module.exports = router;
