@@ -25,6 +25,8 @@ makeofferamount: String,
 biddingamount: String,
 bidid: Number,
 bidstatus: String,
+swapid: Number,
+swapstatus: String,
 
 },{ timestamps: true });
 

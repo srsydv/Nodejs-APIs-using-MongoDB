@@ -362,6 +362,8 @@ exports.reqForSwapAsset = async (req, res) => {
       swaprequestuserwltAddress: NFTdetail[0].ownerwltaddress,
       swaprequestname: NFTdetail[0].ownername,
       swaprequestusername: NFTdetail[0].username,
+      swapid: req.body.swapid,
+      swapstatus: "you send swap request"
     })
     await newActivityForUser.save();
 
@@ -380,6 +382,8 @@ exports.reqForSwapAsset = async (req, res) => {
       swaprequestuserwltAddress: user.address,
       swaprequestname: userDetail[0].name,
       swaprequestusername: userDetail[0].username,
+      swapid: req.body.swapid,
+      swapstatus: "you got swap request"
     })
     await getSwapReq.save();
 
@@ -445,6 +449,8 @@ exports.acceptSwapRequest = async (req, res) => {
       swaprequesttouserwltAddress: NFTdetail[0].ownerwltaddress,
       swaprequesttoname: NFTdetail[0].ownername,
       swaprequesttousername: NFTdetail[0].ownerusername,
+      swapid: req.body.swapid,
+      swapstatus: "you cccepted"
     })
     await newActivityForUser.save();
 
@@ -463,6 +469,8 @@ exports.acceptSwapRequest = async (req, res) => {
       swaprequestuserwltAddress: user.address,
       swaprequestname: userDetail[0].name,
       swaprequestusername: userDetail[0].username,
+      swapid: req.body.swapid,
+      swapstatus: "your req accepted"
     })
     await getSwapped.save();
 
