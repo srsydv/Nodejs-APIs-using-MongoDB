@@ -1103,7 +1103,7 @@ exports.acceptBid = async (req, res) => {
         bidid: req.body.bidid
       }
     )
-    res.send({ result: "Bid Accepted, Successfully"})
+    res.send({ result: "Bid Accepted, Successfully" })
   } catch (error) {
     console.log("dd", error)
     res.status(400).json({
@@ -1180,3 +1180,28 @@ exports.addFavouriteNft = asyncHandler(async (req, res, next) => {
     });
   }
 });
+
+
+exports.checkUsername = async function (req, res) {
+  try {
+    const authHeader = req.headers.authorization;
+    const token = authHeader.split(' ')[1];
+    var user = jwt.decode(token, process.env.JWT_SECRET)
+    const userDetail = await userHelper.userDetailUsingUsername(req.query.username);
+    if (userDetail[0]) {
+      res.send({ result: "username already exist" })
+    }
+    else {
+      res.send({
+        result: "new username"
+      })
+    }
+
+  } catch (error) {
+    res.status(400).json({
+      success: false,
+      data: [],
+      message: "Failed to edit Profile",
+    });
+  }
+}

@@ -24,6 +24,24 @@ userDetail = async (address) => {
         }
     })
 }
+userDetailUsingUsername = async (username) => {
+    try {
+        return new Promise(async (resolve, reject) => {
+            let data = await userModel.find({ username: username });
+            if (data) {
+                resolve(data);
+            } else {
+                reject("Error");
+            }
+        })
+    } catch (error) {
+        res.status(400).json({
+            success: false,
+            data: [],
+            message: "Not able to get user",
+        });
+    }
+}
 
 NFTdetails = async (tokenid) => {
     return new Promise(async (resolve, reject) => {
@@ -59,5 +77,6 @@ module.exports = {
     findName,
     userDetail,
     NFTdetails,
-    bidDetail
+    bidDetail,
+    userDetailUsingUsername
 }

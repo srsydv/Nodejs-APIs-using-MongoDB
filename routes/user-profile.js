@@ -59,4 +59,7 @@ router.route("/acceptBid").post(access_token.authenticateJWT, userController.acc
 // Favourite NFTs
 router.route("/favouriteNfts").get(access_token.authenticateJWT, userController.getFavouriteNfts).patch(access_token.authenticateJWT, userController.addFavouriteNft);
 
+//Check Username exist or not
+router.route("/checkUsername").get(access_token.authenticateJWT,userController.checkUsername);
+
 module.exports = router;
