@@ -112,13 +112,9 @@ exports.NFTforValidation = async function (req, res) {
     const authHeader = req.headers.authorization;
     const token = authHeader.split(' ')[1];
     var user = jwt.decode(token, process.env.JWT_SECRET)
-    // const detailsOfUser = await validatorModel.detailsOfUser(user.address)
     const userDetail = await userHelper.userDetail(user.address);
-    console.log("hh", userDetail[0])
     const NFTdetail = await userHelper.NFTdetails(req.body.tokenid);
-    console.log("hh1", NFTdetail[0])
     const validatorDetail = await validatorHelper.validatorDetail(req.body.validatorwltaddress);
-    console.log("gg", validatorDetail[0])
 
     let validationReqData = new NFTforValidationModel({
       assetname: req.body.assetname,
@@ -151,8 +147,11 @@ exports.NFTforValidation = async function (req, res) {
     await validationReqData.save();
 
 
-    await NFTprofileDetailModel.updateMany(
-      { address: user.address },
+    await NFTprofileDetailModel.updateOne(
+      { 
+        address: user.address,
+        tokenid: req.body.tokenid
+      },
       {
         $set:
         {
