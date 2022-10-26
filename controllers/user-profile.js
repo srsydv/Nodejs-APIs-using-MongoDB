@@ -386,7 +386,7 @@ exports.reqForSwapAsset = async (req, res) => {
     })
     await getSwapReq.save();
 
-    await NFTprofileDetailModel.updateMany(
+    await NFTprofileDetailModel.updateOne(
       {
         tokenid: req.body.tokenid,
         assetname: req.body.assetname
@@ -399,7 +399,7 @@ exports.reqForSwapAsset = async (req, res) => {
       }
     )
 
-    await NFTprofileDetailModel.updateMany(
+    await NFTprofileDetailModel.updateOne(
       {
         tokenid: req.body.toswaptokenid,
         assetname: req.body.toswapassetname
@@ -975,7 +975,8 @@ exports.makeoffer = async (req, res) => {
       username: NFTdetail[0].ownerusername,
       name: NFTdetail[0].ownername,
       userwltaddress: NFTdetail[0].ownerwltaddress,
-      makeofferamount: req.body.makeofferamount
+      makeofferamount: req.body.makeofferamount,
+      whomadeoffer: user.address
     })
     await ActivityForUser.save();
 
@@ -1017,6 +1018,7 @@ exports.placeBid = async (req, res) => {
       username: NFTdetail[0].ownerusername,
       name: NFTdetail[0].ownername,
       userwltaddress: NFTdetail[0].ownerwltaddress,
+      bidderaddress: user.address,
       biddingamount: req.body.biddingamount,
       bidid: req.body.bidid,
       bidstatus: "panding"

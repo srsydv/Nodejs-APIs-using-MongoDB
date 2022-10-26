@@ -1,6 +1,7 @@
 const asyncHandler = require("../middleware/async");
 const NftModel = require("../models/Nftprofiledetail");
 const userHelper = require("../middleware/user-helper")
+const userActivityModel = require("../models/user-activity");
 const moment = require('moment');
 const jwt = require('jsonwebtoken')
 
@@ -90,7 +91,43 @@ exports.NFTdetail = async (req, res) => {
     const token = authHeader.split(' ')[1];
     var user = jwt.decode(token, process.env.JWT_SECRET)
     let data = await NftModel.find({ tokenid: req.query.tokenid });
-    res.send({ result: data })
+    let swapData = await userActivityModel.find({ 
+      tokenid: req.query.tokenid,
+      message: "Swap Request IN"
+    });
+    let NFTtransferData = await userActivityModel.find({ 
+      tokenid: req.query.tokenid,
+      message: "NFT Transfered"
+    });
+    let redeemNFTdata = await userActivityModel.find({ 
+      tokenid: req.query.tokenid,
+      message: "redeem nft"
+    });
+    let burnNFTdata = await userActivityModel.find({ 
+      tokenid: req.query.tokenid,
+      message: "NFT burned"
+    });
+    let bidNFTdata = await userActivityModel.find({ 
+      tokenid: req.query.tokenid,
+      message: "you got a bid"
+    });
+    let NFTbidAcceptdata = await userActivityModel.find({ 
+      tokenid: req.query.tokenid,
+      message: "you bid got accepted"
+    });
+    let NFTmakeOfferdata = await userActivityModel.find({ 
+      tokenid: req.query.tokenid,
+      message: "make offer"
+    });
+    res.send({ 
+      NFTdetail: data,
+      swapData: swapData,
+      NFTtransferData: NFTtransferData,
+      redeemNFTdata: redeemNFTdata,
+      burnNFTdata: burnNFTdata,
+      NFTbidAcceptdata: NFTbidAcceptdata,
+      NFTmakeOfferdata: NFTmakeOfferdata
+    })
   } catch (error) {
     res.status(400).json({
       success: false,

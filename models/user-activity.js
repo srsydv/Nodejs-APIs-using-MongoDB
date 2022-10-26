@@ -27,6 +27,8 @@ bidid: Number,
 bidstatus: String,
 swapid: Number,
 swapstatus: String,
+bidderaddress: String,
+whomadeoffer: String,
 
 },{ timestamps: true });
 
