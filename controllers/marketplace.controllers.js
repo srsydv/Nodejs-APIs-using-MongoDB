@@ -31,6 +31,7 @@ exports.listNFTforMP = async (req, res) => {
           mpfees: req.body.mpfees,
           mpstartingprice: req.body.mpstartingprice,
           mpendingprice: req.body.mpendingprice,
+          saleid: req.body.saleid,
           listonmarketplace: "true"
         }
       }

@@ -53,6 +53,7 @@ const NftProfileDetail = new mongoose.Schema({
   buyamount: String,
   redeemNFTstatus: String,
   listonmarketplace: String,
+  saleid: Number,
   bidstatus: String,
   redeemNFTrequest: {
     type: String,
