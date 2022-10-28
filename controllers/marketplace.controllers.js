@@ -47,6 +47,43 @@ exports.listNFTforMP = async (req, res) => {
   }
 }
 
+exports.unlistNFTforMP = async (req, res) => {
+  try {
+    const authHeader = req.headers.authorization;
+    const token = authHeader.split(' ')[1];
+    var user = jwt.decode(token, process.env.JWT_SECRET)
+    await NFTprofileDetailModel.updateMany(
+      { tokenid: req.body.tokenid, assetname: req.body.assetname, ownerwltaddress: user.address },
+      {
+        $set:
+        {
+          onselldate: moment().format(),
+          sellstatus: "not started",
+          mptype: "",
+          mpprice: "",
+          mpduration: "",
+          mpsupply: "",
+          mpsetasbundle: "",
+          mpreserveforspecificbuyer: "",
+          mpfees: "",
+          mpstartingprice: "",
+          mpendingprice: "",
+          saleid: "",
+          listonmarketplace: "false"
+        }
+      }
+    )
+
+    res.send({ result: "Removed From MarketPlace" })
+  } catch (error) {
+    res.status(400).json({
+      success: false,
+      data: [],
+      message: "Failed to execute",
+    });
+  }
+}
+
 
 exports.MarketPlaceNFTs = async (req, res) => {
   try {

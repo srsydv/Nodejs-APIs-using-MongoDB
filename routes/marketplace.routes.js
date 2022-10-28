@@ -9,8 +9,11 @@ const advancedResults = require("../middleware/advancedResults");
 const router = express.Router();
 
 
-// List Your NFT for MarketPlace
+// List Your NFT from MarketPlace
 router.route("/listNFTforMP").put(access_token.authenticateJWT, NFTmarketplace.listNFTforMP);
+
+//UnList your NFT from MarketPlace
+router.route("/unlistNFTforMP").put(access_token.authenticateJWT, NFTmarketplace.unlistNFTforMP);
 
 // Pagiantion of NFT for MarketPlace
 router.route("/MarketPlaceNFTs").get(NFTmarketplace.MarketPlaceNFTs);
