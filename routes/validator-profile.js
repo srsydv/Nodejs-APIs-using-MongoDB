@@ -37,4 +37,7 @@ router.route("/AllActivitiesofValidator").get(access_token.authenticateJWT,valid
 // Favourite NFTs
 router.route("/favouriteNfts").get(access_token.authenticateJWT, validatorController.getFavouriteNfts).patch(access_token.authenticateJWT, validatorController.addFavouriteNft);
 
+//Read The Notification By Validator
+router.route("/ReadTheNotification").post(access_token.authenticateJWT, validatorController.ReadTheNotification);
+
 module.exports = router;

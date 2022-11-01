@@ -203,7 +203,9 @@ exports.getUserCreatedNfts = asyncHandler(async (req, res, next) => {
     const {useraddress, sortby="latest"} = req.query;
 
     let queryStr = {
-      createrwltaddress: useraddress
+      createrwltaddress: (useraddress).toLowerCase(),
+      validationstate: "pending",
+      validationstate: "not started"
     }
 
     query = NftModel.find(queryStr);

@@ -29,6 +29,11 @@ swapid: Number,
 swapstatus: String,
 bidderaddress: String,
 whomadeoffer: String,
+markasread: {
+    type: String,
+    enum: ["read", "unread"],
+    default: "unread",
+  },
 
 },{ timestamps: true });
 

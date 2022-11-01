@@ -62,4 +62,7 @@ router.route("/favouriteNfts").get(access_token.authenticateJWT, userController.
 //Check Username exist or not
 router.route("/checkUsername").get(access_token.authenticateJWT,userController.checkUsername);
 
+//Read The Notification By User
+router.route("/ReadTheNotification").post(access_token.authenticateJWT, userController.ReadTheNotification);
+
 module.exports = router;

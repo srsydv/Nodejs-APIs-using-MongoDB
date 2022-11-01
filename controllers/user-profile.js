@@ -3,7 +3,6 @@ const UserModel = require("../models/User-profile");
 const NftModel = require("../models/Nftprofiledetail");
 const validatorModel = require("../models/Validator-profile");
 const validatorActivity = require("../models/validator-activity")
-const UserActivity = require("../models/user-activity")
 const NFTforValidationModel = require("../models/NftForValidation");
 const NFTprofileDetailModel = require("../models/Nftprofiledetail");
 const userActivityModel = require("../models/user-activity");
@@ -1205,6 +1204,38 @@ exports.checkUsername = async function (req, res) {
         result: "new username"
       })
     }
+
+  } catch (error) {
+    res.status(400).json({
+      success: false,
+      data: [],
+      message: "Failed to edit Profile",
+    });
+  }
+}
+
+
+
+exports.ReadTheNotification = async function (req, res) {
+  try {
+    const authHeader = req.headers.authorization;
+    const token = authHeader.split(' ')[1];
+    var user = jwt.decode(token, process.env.JWT_SECRET);
+
+    const hi = await userActivityModel.updateMany(
+      {
+        id: req.body.mongoid
+      },
+      {
+        $set:
+        {
+          markasread: "read"
+        }
+      }
+    )
+
+    res.send({ result: "read" })
+    
 
   } catch (error) {
     res.status(400).json({

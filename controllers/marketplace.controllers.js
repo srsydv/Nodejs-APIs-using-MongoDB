@@ -100,6 +100,7 @@ exports.MarketPlaceNFTs = async (req, res) => {
       blockchain,
       typeofart: assettype,
       estimatedvalue: { $gte: from, $lte: to },
+      listonmarketplace: "true",
     };
   }
 

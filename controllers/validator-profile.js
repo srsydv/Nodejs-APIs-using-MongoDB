@@ -472,3 +472,33 @@ exports.addFavouriteNft = asyncHandler(async (req, res, next) => {
     });
   }
 });
+
+exports.ReadTheNotification = async function (req, res) {
+  try {
+    const authHeader = req.headers.authorization;
+    const token = authHeader.split(' ')[1];
+    var user = jwt.decode(token, process.env.JWT_SECRET);
+
+    const hi = await validatorActivityModel.updateMany(
+      {
+        id: req.body.mongoid
+      },
+      {
+        $set:
+        {
+          markasread: "read"
+        }
+      }
+    )
+
+    res.send({ result: "read" })
+    
+
+  } catch (error) {
+    res.status(400).json({
+      success: false,
+      data: [],
+      message: "Failed to edit Profile",
+    });
+  }
+}

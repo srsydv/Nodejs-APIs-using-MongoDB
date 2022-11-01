@@ -17,6 +17,11 @@ const validatorActivity = new mongoose.Schema(
     message: String,
     DateAndTime: String,
     buyamount: String,
+    markasread: {
+      type: String,
+      enum: ["read", "unread"],
+      default: "unread",
+    },
   },
   { timestamps: true }
 );
