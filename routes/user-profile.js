@@ -56,6 +56,9 @@ router.route("/placeBid").post(access_token.authenticateJWT, userController.plac
 //Accept Bid
 router.route("/acceptBid").post(access_token.authenticateJWT, userController.acceptBid);
 
+//Check your Bidding on a NFT
+router.route("/checkYourBid").get(access_token.authenticateJWT,userController.checkYourBid);
+
 // Favourite NFTs
 router.route("/favouriteNfts").get(access_token.authenticateJWT, userController.getFavouriteNfts).patch(access_token.authenticateJWT, userController.addFavouriteNft);
 

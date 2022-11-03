@@ -10,6 +10,7 @@ const userHelper = require("../middleware/user-helper")
 const validatorHelper = require("../middleware/validator-helper")
 const jwt = require('jsonwebtoken')
 const moment = require('moment');
+const { query } = require("express");
 
 exports.getUsers = asyncHandler(async (req, res, next) => {
   try {
@@ -147,7 +148,7 @@ exports.NFTforValidation = async function (req, res) {
 
 
     await NFTprofileDetailModel.updateOne(
-      { 
+      {
         address: user.address,
         tokenid: req.body.tokenid
       },
@@ -969,7 +970,7 @@ exports.makeoffer = async (req, res) => {
 
       assetname: req.body.assetname,
       tokenid: req.body.tokenid,
-      message: "make offer",
+      message: "you got an offer",
       DateAndTime: moment().format(),
       username: NFTdetail[0].ownerusername,
       name: NFTdetail[0].ownername,
@@ -1123,6 +1124,45 @@ exports.acceptBid = async (req, res) => {
 }
 
 
+
+exports.checkYourBid = async (req, res) => {
+  try {
+    const authHeader = req.headers.authorization;
+    const token = authHeader.split(' ')[1];
+    var user = jwt.decode(token, process.env.JWT_SECRET)
+
+
+    let queryStr = {
+      userwltaddress: user.address,
+      message: "you made bid"
+    }
+
+    let query = userActivityModel.find(queryStr);
+
+    const results = await query;
+    console.log("ss", results.length)
+    if (results.length > 0) {
+      res.send({
+        message: "Bid Available",
+        results: results
+      })
+    }
+    else {
+      res.send({ message: "No Bid Available" })
+    }
+
+
+  } catch (error) {
+    console.log("dd", error)
+    res.status(400).json({
+      success: false,
+      data: [],
+      message: "Failed to execute",
+    });
+  }
+}
+
+
 exports.getFavouriteNfts = asyncHandler(async (req, res, next) => {
   try {
     const authHeader = req.headers.authorization;
@@ -1235,7 +1275,7 @@ exports.ReadTheNotification = async function (req, res) {
     )
 
     res.send({ result: "read" })
-    
+
 
   } catch (error) {
     res.status(400).json({

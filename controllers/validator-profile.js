@@ -293,9 +293,9 @@ exports.MyValidatedNFT = async (req, res) => {
 
 
 exports.acceptRedeemReq = async (req, res) => {
-try {
-  
-  const authHeader = req.headers.authorization;
+  try {
+
+    const authHeader = req.headers.authorization;
     const token = authHeader.split(' ')[1];
     var user = jwt.decode(token, process.env.JWT_SECRET)
     const validatorDetail = await validatorHelper.validatorDetail(user.address);
@@ -329,17 +329,17 @@ try {
         }
       }
     )
-  
-  res.json({
-      message:"Request Accepted"
-  })
-} catch (error) {
-  res.status(400).json({
-    success: false,
-    data: [],
-    message: "Cant Accept request",
-  });
-}
+
+    res.json({
+      message: "Request Accepted"
+    })
+  } catch (error) {
+    res.status(400).json({
+      success: false,
+      data: [],
+      message: "Cant Accept request",
+    });
+  }
 
 }
 
@@ -351,7 +351,7 @@ exports.getAllActivities = asyncHandler(async (req, res, next) => {
 
     let query;
 
-    const {activity, sortby="latest"} = req.query;
+    const { activity, sortby = "latest" } = req.query;
 
     let queryStr = {
       message: activity,
@@ -360,9 +360,9 @@ exports.getAllActivities = asyncHandler(async (req, res, next) => {
 
     query = validatorActivityModel.find(queryStr);
 
-    if(sortby === "oldest"){
+    if (sortby === "oldest") {
       query = query.sort("createdAt");
-    }else{
+    } else {
       query = query.sort("-createdAt");
     }
 
@@ -412,8 +412,8 @@ exports.getFavouriteNfts = asyncHandler(async (req, res, next) => {
     const authHeader = req.headers.authorization;
     const token = authHeader.split(' ')[1];
     let user = jwt.decode(token, process.env.JWT_SECRET);
-    
-    const nfts = await ValidatorModel.find({address: user.address}).populate("favourite");
+
+    const nfts = await ValidatorModel.find({ address: user.address }).populate("favourite");
     if (!nfts) {
       res.json({
         success: true,
@@ -445,20 +445,20 @@ exports.addFavouriteNft = asyncHandler(async (req, res, next) => {
 
     const { id } = req.body;
 
-    const favouriteNfts = await ValidatorModel.find({address: user.address}).select('favourite');
-    
-    let data = favouriteNfts[0].favourite.length ? favouriteNfts[0].favourite: [];
-    if(data.length){
-      if(data.includes(id)){
+    const favouriteNfts = await ValidatorModel.find({ address: user.address }).select('favourite');
+
+    let data = favouriteNfts[0].favourite.length ? favouriteNfts[0].favourite : [];
+    if (data.length) {
+      if (data.includes(id)) {
         data = data.filter(d => d.toString() !== id);
-      }else{
+      } else {
         data.push(id);
       }
-    }else{
+    } else {
       data.push(id);
     }
 
-    const nft = await ValidatorModel.findOneAndUpdate({address: user.address}, {favourite: data});
+    const nft = await ValidatorModel.findOneAndUpdate({ address: user.address }, { favourite: data });
 
     res.status(200).json({
       success: true
@@ -492,7 +492,7 @@ exports.ReadTheNotification = async function (req, res) {
     )
 
     res.send({ result: "read" })
-    
+
 
   } catch (error) {
     res.status(400).json({

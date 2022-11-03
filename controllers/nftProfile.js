@@ -91,35 +91,35 @@ exports.NFTdetail = async (req, res) => {
     const token = authHeader.split(' ')[1];
     var user = jwt.decode(token, process.env.JWT_SECRET)
     let data = await NftModel.find({ tokenid: req.query.tokenid });
-    let swapData = await userActivityModel.find({ 
+    let swapData = await userActivityModel.find({
       tokenid: req.query.tokenid,
       message: "Swap Request IN"
     });
-    let NFTtransferData = await userActivityModel.find({ 
+    let NFTtransferData = await userActivityModel.find({
       tokenid: req.query.tokenid,
       message: "NFT Transfered"
     });
-    let redeemNFTdata = await userActivityModel.find({ 
+    let redeemNFTdata = await userActivityModel.find({
       tokenid: req.query.tokenid,
       message: "redeem nft"
     });
-    let burnNFTdata = await userActivityModel.find({ 
+    let burnNFTdata = await userActivityModel.find({
       tokenid: req.query.tokenid,
       message: "NFT burned"
     });
-    let bidNFTdata = await userActivityModel.find({ 
+    let bidNFTdata = await userActivityModel.find({
       tokenid: req.query.tokenid,
       message: "you got a bid"
     });
-    let NFTbidAcceptdata = await userActivityModel.find({ 
+    let NFTbidAcceptdata = await userActivityModel.find({
       tokenid: req.query.tokenid,
       message: "you bid got accepted"
     });
-    let NFTmakeOfferdata = await userActivityModel.find({ 
+    let NFTmakeOfferdata = await userActivityModel.find({
       tokenid: req.query.tokenid,
       message: "make offer"
     });
-    res.send({ 
+    res.send({
       NFTdetail: data,
       swapData: swapData,
       NFTtransferData: NFTtransferData,
@@ -141,7 +141,7 @@ exports.getUserNfts = asyncHandler(async (req, res, next) => {
   try {
     let query;
 
-    const {useraddress, sortby="latest"} = req.query;
+    const { useraddress, sortby = "latest" } = req.query;
 
     let queryStr = {
       ownerwltaddress: useraddress
@@ -149,9 +149,9 @@ exports.getUserNfts = asyncHandler(async (req, res, next) => {
 
     query = NftModel.find(queryStr);
 
-    if(sortby === "oldest"){
+    if (sortby === "oldest") {
       query = query.sort("createdAt");
-    }else{
+    } else {
       query = query.sort("-createdAt");
     }
 
@@ -198,21 +198,27 @@ exports.getUserNfts = asyncHandler(async (req, res, next) => {
 
 exports.getUserCreatedNfts = asyncHandler(async (req, res, next) => {
   try {
+
+    const authHeader = req.headers.authorization;
+    const token = authHeader.split(' ')[1];
+    var user = jwt.decode(token, process.env.JWT_SECRET)
+
     let query;
 
-    const {useraddress, sortby="latest"} = req.query;
+    const { useraddress, sortby = "latest" } = req.query;
 
     let queryStr = {
-      createrwltaddress: (useraddress).toLowerCase()
+      createrwltaddress: (useraddress).toLowerCase(),
+      validationstate: { $ne: "validated" }
     }
-    
-    // validationstate: "pending",
-    // validationstate: "not started"
-    query = NftModel.find({queryStr,validationstate: {$ne: "validated"}});
 
-    if(sortby === "oldest"){
+    //here $ne means not equal to
+
+    query = NftModel.find(queryStr);
+
+    if (sortby === "oldest") {
       query = query.sort("createdAt");
-    }else{
+    } else {
       query = query.sort("-createdAt");
     }
 
@@ -265,27 +271,27 @@ exports.getMyValidatedNfts = asyncHandler(async (req, res, next) => {
 
     let query;
 
-    const {sortby="latest", state="all"} = req.query;
+    const { sortby = "latest", state = "all" } = req.query;
 
     let queryStr = {
       ownerwltaddress: user.address,
     }
 
-    if(state === "validated"){
+    if (state === "validated") {
       queryStr["validationstate"] = "validated";
-    }else if(state === "redeemed"){
+    } else if (state === "redeemed") {
       queryStr["redeemNFTrequest"] = "redeemed";
-    }else if(state === "asset requested"){
+    } else if (state === "asset requested") {
       queryStr["redeemNFTrequest"] = "accepted";
-    }else if(state === "burned"){
+    } else if (state === "burned") {
       queryStr["burnNFTstatus"] = "true"
     }
 
     query = NftModel.find(queryStr);
 
-    if(sortby === "oldest"){
+    if (sortby === "oldest") {
       query = query.sort("createdAt");
-    }else{
+    } else {
       query = query.sort("-createdAt");
     }
 
@@ -334,27 +340,27 @@ exports.getValidatedNfts = asyncHandler(async (req, res, next) => {
   try {
     let query;
 
-    const {useraddress, sortby="latest", state="all"} = req.query;
+    const { useraddress, sortby = "latest", state = "all" } = req.query;
 
     let queryStr = {
       ownerwltaddress: useraddress,
     }
 
-    if(state === "validated"){
+    if (state === "validated") {
       queryStr["validationstate"] = "validated";
-    }else if(state === "redeemed"){
+    } else if (state === "redeemed") {
       queryStr["redeemNFTrequest"] = "redeemed";
-    }else if(state === "asset requested"){
+    } else if (state === "asset requested") {
       queryStr["redeemNFTrequest"] = "accepted";
-    }else if(state === "burned"){
+    } else if (state === "burned") {
       queryStr["burnNFTstatus"] = "true"
     }
 
     query = NftModel.find(queryStr);
 
-    if(sortby === "oldest"){
+    if (sortby === "oldest") {
       query = query.sort("createdAt");
-    }else{
+    } else {
       query = query.sort("-createdAt");
     }
 
