@@ -1133,7 +1133,7 @@ exports.checkYourBid = async (req, res) => {
 
 
     let queryStr = {
-      userwltaddress: user.address,
+      userwltaddress: (user.address).toLowerCase(),
       message: "you made bid"
     }
 
