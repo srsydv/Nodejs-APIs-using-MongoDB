@@ -203,12 +203,12 @@ exports.getUserCreatedNfts = asyncHandler(async (req, res, next) => {
     const {useraddress, sortby="latest"} = req.query;
 
     let queryStr = {
-      createrwltaddress: (useraddress).toLowerCase(),
-      validationstate: "pending",
-      validationstate: "not started"
+      createrwltaddress: (useraddress).toLowerCase()
     }
-
-    query = NftModel.find(queryStr);
+    
+    // validationstate: "pending",
+    // validationstate: "not started"
+    query = NftModel.find({queryStr,validationstate: {$ne: "validated"}});
 
     if(sortby === "oldest"){
       query = query.sort("createdAt");
