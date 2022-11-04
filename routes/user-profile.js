@@ -53,6 +53,9 @@ router.route("/makeoffer").post(access_token.authenticateJWT, userController.mak
 //Place Bid
 router.route("/placeBid").post(access_token.authenticateJWT, userController.placeBid);
 
+//Withdraw Bid
+router.route("/withdrawBid").post(access_token.authenticateJWT, userController.withdrawBid);
+
 //Accept Bid
 router.route("/acceptBid").post(access_token.authenticateJWT, userController.acceptBid);
 

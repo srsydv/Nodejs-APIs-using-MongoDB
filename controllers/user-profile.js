@@ -1021,6 +1021,7 @@ exports.placeBid = async (req, res) => {
       bidderaddress: user.address,
       biddingamount: req.body.biddingamount,
       bidid: req.body.bidid,
+      saleid: req.body.saleid,
       bidstatus: "panding"
     })
     await ActivityForUser.save();
@@ -1036,6 +1037,7 @@ exports.placeBid = async (req, res) => {
       userwltaddress: user.address,
       biddingamount: req.body.biddingamount,
       bidid: req.body.bidid,
+      saleid: req.body.saleid,
       bidstatus: "panding"
     })
     await ActivityForOtherUser.save();
@@ -1046,6 +1048,69 @@ exports.placeBid = async (req, res) => {
   }
 }
 
+
+
+exports.withdrawBid = async (req, res) => {
+  try {
+    const authHeader = req.headers.authorization;
+    const token = authHeader.split(' ')[1];
+    var user = jwt.decode(token, process.env.JWT_SECRET)
+
+    const userDetail = await userHelper.userDetail(user.address);
+    const NFTdetail = await userHelper.NFTdetails(req.body.tokenid);
+
+    let ActivityForUser = new userActivityModel({
+
+      assetname: req.body.assetname,
+      tokenid: req.body.tokenid,
+      message: "a bid got withdraw",
+      DateAndTime: moment().format(),
+      username: NFTdetail[0].ownerusername,
+      name: NFTdetail[0].ownername,
+      userwltaddress: NFTdetail[0].ownerwltaddress,
+      bidderaddress: user.address,
+      biddingamount: req.body.biddingamount,
+      bidid: req.body.bidid,
+      saleid: req.body.saleid,
+    })
+    await ActivityForUser.save();
+
+    let ActivityForOtherUser = new userActivityModel({
+
+      assetname: req.body.assetname,
+      tokenid: req.body.tokenid,
+      message: "you withdraw a bid",
+      DateAndTime: moment().format(),
+      username: userDetail[0].username,
+      name: userDetail[0].name,
+      userwltaddress: user.address,
+      biddingamount: req.body.biddingamount,
+      bidid: req.body.bidid,
+      saleid: req.body.saleid,
+    })
+    await ActivityForOtherUser.save();
+    
+    await userActivityModel.findOneAndDelete(
+      {
+        userwltaddress: user.address,
+        message: "you made bid",
+        bidid: req.body.bidid,
+        saleid: req.body.saleid
+      });
+
+    await userActivityModel.findOneAndDelete(
+      {
+        userwltaddress: NFTdetail[0].ownerwltaddress,
+        message: "you got a bid",
+        bidid: req.body.bidid,
+        saleid: req.body.saleid
+      });
+
+    res.send({ result: "Bid withdraw, Successfully" })
+  } catch (error) {
+    console.log("dd", error)
+  }
+}
 
 
 exports.acceptBid = async (req, res) => {

@@ -117,16 +117,20 @@ exports.NFTdetail = async (req, res) => {
     });
     let NFTmakeOfferdata = await userActivityModel.find({
       tokenid: req.query.tokenid,
-      message: "make offer"
+      message: "you got an offer"
     });
     res.send({
       NFTdetail: data,
       swapData: swapData,
+      swapCount: swapData.length,
       NFTtransferData: NFTtransferData,
       redeemNFTdata: redeemNFTdata,
       burnNFTdata: burnNFTdata,
+      bidNFTdata: bidNFTdata,
+      bidNFTCount: bidNFTdata.length,
       NFTbidAcceptdata: NFTbidAcceptdata,
-      NFTmakeOfferdata: NFTmakeOfferdata
+      NFTmakeOfferdata: NFTmakeOfferdata,
+      NFTmakeOfferCount: NFTmakeOfferdata.length,
     })
   } catch (error) {
     res.status(400).json({
