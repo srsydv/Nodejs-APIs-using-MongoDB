@@ -20,7 +20,7 @@ router.route("/EditvalidatorProfile").put(access_token.authenticateJWT, validato
 router.route("/validatorsProfile").get(access_token.authenticateJWT, advancedResults(ValidatorModel), validatorController.validatorsProfile);
 
 // All Requests for Validation for validator
-router.route("/RequestforValidation").get(access_token.authenticateJWT, advancedResults(nftForValidation), validatorController.RequestforValidation);
+router.route("/RequestforValidation").get(access_token.authenticateJWT,  validatorController.RequestforValidation);
 
 //Validate NFT by Validator
 router.route("/validateNFT").put(access_token.authenticateJWT, validatorController.validateNFT);

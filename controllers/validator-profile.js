@@ -6,6 +6,7 @@ const userModel = require("../models/User-profile");
 const UserModel = require("../models/User-profile");
 const userActivityModel = require("../models/user-activity");
 const validatorActivityModel = require("../models/validator-activity")
+const NftForValidationModel = require("../models/NftForValidation")
 const validatorHelper = require("../middleware/validator-helper")
 const userHelper = require("../middleware/user-helper")
 const jwt = require('jsonwebtoken')
@@ -166,8 +167,63 @@ exports.validatorsProfile = async (req, res) => {
 
 exports.RequestforValidation = async (req, res) => {
   try {
-    res.status(200).json(res.advancedResults);
+    const authHeader = req.headers.authorization;
+    const token = authHeader.split(' ')[1];
+    var user = jwt.decode(token, process.env.JWT_SECRET)
+
+    let query;
+
+    const { sortby = "latest" } = req.query;
+
+    let queryStr = {
+      validatorwltaddressforvld: user.address,
+      validationstate: "pending"
+    }
+
+    //here $ne means not equal to
+
+    query = NftForValidationModel.find(queryStr);
+
+    if (sortby === "oldest") {
+      query = query.sort("createdAt");
+    } else {
+      query = query.sort("-createdAt");
+    }
+
+    const page = parseInt(req.query.page, 10) || 1;
+    const limit = parseInt(req.query.limit, 10) || 30;
+    const startIndex = (page - 1) * limit;
+    const endIndex = page * limit;
+    const total = await NftForValidationModel.countDocuments(queryStr);
+    query = query.skip(startIndex).limit(limit);
+
+    const results = await query;
+
+    const pagination = {};
+
+    if (endIndex < total) {
+      pagination.next = {
+        page: page + 1,
+        limit,
+      };
+    }
+
+    if (startIndex > 0) {
+      pagination.prev = {
+        page: page - 1,
+        limit,
+      };
+    }
+
+    return res.status(200).json({
+      success: true,
+      count: results.length,
+      totalCount: total,
+      pagination: results.length ? pagination : {},
+      data: results,
+    });
   } catch (error) {
+    console.log("sss",error)
     res.status(400).json({
       success: false,
       data: [],
