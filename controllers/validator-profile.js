@@ -180,7 +180,6 @@ exports.RequestforValidation = async (req, res) => {
       validationstate: "pending"
     }
 
-    //here $ne means not equal to
 
     query = NftForValidationModel.find(queryStr);
 
