@@ -222,7 +222,7 @@ exports.RequestforValidation = async (req, res) => {
       data: results,
     });
   } catch (error) {
-    console.log("sss",error)
+    console.log("sss", error)
     res.status(400).json({
       success: false,
       data: [],
