@@ -1134,13 +1134,13 @@ exports.checkYourBid = async (req, res) => {
 
     let queryStr = {
       userwltaddress: (user.address).toLowerCase(),
-      message: "you made bid"
+      message: "you made bid",
+      tokenid: req.query.tokenid
     }
 
     let query = userActivityModel.find(queryStr);
 
     const results = await query;
-    console.log("ss", results.length)
     if (results.length > 0) {
       res.send({
         message: "Bid Available",
