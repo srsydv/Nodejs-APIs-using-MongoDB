@@ -94,7 +94,9 @@ exports.MarketPlaceNFTs = async (req, res) => {
     let queryStr = {};
 
     if (blockchain === "" || assettype === "") {
-      queryStr = {};
+      queryStr = {
+        listonmarketplace: "true",
+      };
     } else {
       queryStr = {
         blockchain,
