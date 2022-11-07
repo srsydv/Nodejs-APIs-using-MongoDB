@@ -99,7 +99,7 @@ exports.MarketPlaceNFTs = async (req, res) => {
       };
     } else {
       queryStr = {
-        blockchain,
+        blockchain: req.query.blockchain,
         typeofart: assettype,
         estimatedvalue: { $gte: from, $lte: to },
         listonmarketplace: "true",
