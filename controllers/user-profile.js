@@ -449,7 +449,7 @@ exports.acceptSwapRequest = async (req, res) => {
       swaprequesttoname: NFTdetail[0].ownername,
       swaprequesttousername: NFTdetail[0].ownerusername,
       swapid: req.body.swapid,
-      swapstatus: "you cccepted"
+      swapstatus: "you accepted"
     })
     await newActivityForUser.save();
 
@@ -1090,21 +1090,21 @@ exports.withdrawBid = async (req, res) => {
     })
     await ActivityForOtherUser.save();
     
-    await userActivityModel.findOneAndDelete(
-      {
-        userwltaddress: user.address,
-        message: "you made bid",
-        bidid: req.body.bidid,
-        saleid: req.body.saleid
-      });
+    // await userActivityModel.findOneAndDelete(
+    //   {
+    //     userwltaddress: user.address,
+    //     message: "you made bid",
+    //     bidid: req.body.bidid,
+    //     saleid: req.body.saleid
+    //   });
 
-    await userActivityModel.findOneAndDelete(
-      {
-        userwltaddress: NFTdetail[0].ownerwltaddress,
-        message: "you got a bid",
-        bidid: req.body.bidid,
-        saleid: req.body.saleid
-      });
+    // await userActivityModel.findOneAndDelete(
+    //   {
+    //     userwltaddress: NFTdetail[0].ownerwltaddress,
+    //     message: "you got a bid",
+    //     bidid: req.body.bidid,
+    //     saleid: req.body.saleid
+    //   });
 
     res.send({ result: "Bid withdraw, Successfully" })
   } catch (error) {
@@ -1167,7 +1167,15 @@ exports.acceptBid = async (req, res) => {
         {
           ownerusername: bidDetail[0].username,
           ownername: bidDetail[0].name,
-          ownerwltaddress: bidDetail[0].userwltaddress
+          ownerwltaddress: bidDetail[0].userwltaddress,
+          sellstatus: "sold",
+          mptype:"",
+          mpprice: "",
+          mpduration: "",
+          mpsupply: "",
+          mpsetasbundle: "",
+          mpfees: "",
+          listonmarketplace: "false",
         }
       }
     )

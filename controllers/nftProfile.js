@@ -92,8 +92,7 @@ exports.NFTdetail = async (req, res) => {
     var user = jwt.decode(token, process.env.JWT_SECRET)
     let data = await NftModel.find({ tokenid: req.query.tokenid });
     let swapData = await userActivityModel.find({
-      tokenid: req.query.tokenid,
-      message: "Swap Request IN"
+      tokenid: req.query.tokenid
     });
     let NFTtransferData = await userActivityModel.find({
       tokenid: req.query.tokenid,
