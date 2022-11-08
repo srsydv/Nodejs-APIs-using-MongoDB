@@ -91,8 +91,13 @@ exports.NFTdetail = async (req, res) => {
     const token = authHeader.split(' ')[1];
     var user = jwt.decode(token, process.env.JWT_SECRET)
     let data = await NftModel.find({ tokenid: req.query.tokenid });
-    let swapData = await userActivityModel.find({
-      tokenid: req.query.tokenid
+    let swapDataIN = await userActivityModel.find({
+      tokenid: req.query.tokenid,
+      message: "Swap Request IN"
+    });
+    let swapDataOUT = await userActivityModel.find({
+      tokenid: req.query.tokenid,
+      message: "Swap Request OUT"
     });
     let NFTtransferData = await userActivityModel.find({
       tokenid: req.query.tokenid,
@@ -120,8 +125,8 @@ exports.NFTdetail = async (req, res) => {
     });
     res.send({
       NFTdetail: data,
-      swapData: swapData,
-      swapCount: swapData.length,
+      swapDataIN: swapDataIN,
+      swapDataOUT: swapDataOUT,
       NFTtransferData: NFTtransferData,
       redeemNFTdata: redeemNFTdata,
       burnNFTdata: burnNFTdata,
