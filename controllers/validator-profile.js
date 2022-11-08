@@ -315,10 +315,26 @@ exports.validateNFT = async (req, res) => {
         }
       }
     )
+    await NFTprofileDetailModel.findOneAndUpdate(
+      {
+        tokenid: req.body.tokenid
+      },
+      {
+        $push: {
+          history: [
+            {
+              userwltaddress: user.address,
+              message: "Validated"
+            }
+          ],
+        }
+      }
+    )
 
     res.send({ result: "Validated" })
 
   } catch (error) {
+    console.log("ff",error)
     res.status(400).json({
       success: false,
       data: [],

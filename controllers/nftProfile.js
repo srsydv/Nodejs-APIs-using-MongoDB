@@ -99,6 +99,11 @@ exports.NFTdetail = async (req, res) => {
       tokenid: req.query.tokenid,
       message: "Swap Request OUT"
     });
+    let swapAcceptData = await userActivityModel.find({
+      tokenid: req.query.tokenid,
+      message: "your req accepted"
+    });
+    
     let NFTtransferData = await userActivityModel.find({
       tokenid: req.query.tokenid,
       message: "NFT Transfered"
@@ -127,6 +132,7 @@ exports.NFTdetail = async (req, res) => {
       NFTdetail: data,
       swapDataIN: swapDataIN,
       swapDataOUT: swapDataOUT,
+      swapAcceptData: swapAcceptData,
       NFTtransferData: NFTtransferData,
       redeemNFTdata: redeemNFTdata,
       burnNFTdata: burnNFTdata,

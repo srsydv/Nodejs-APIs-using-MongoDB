@@ -1,5 +1,11 @@
 const mongoose = require("mongoose");
 
+
+const historySchema = new mongoose.Schema({
+  userwltaddress: String,
+  message: String,
+},{ timestamps: true });
+
 const NftProfileDetail = new mongoose.Schema({
   assetname: String,
   typeofart: String,
@@ -55,6 +61,7 @@ const NftProfileDetail = new mongoose.Schema({
   listonmarketplace: String,
   saleid: Number,
   bidstatus: String,
+  history: [historySchema],
   redeemNFTrequest: {
     type: String,
     enum: ["false", "true", "accepted", "redeemed"],
