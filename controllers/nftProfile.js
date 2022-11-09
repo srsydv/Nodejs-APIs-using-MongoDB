@@ -122,7 +122,14 @@ exports.NFTdetail = async (req, res) => {
       tokenid: req.query.tokenid,
       message: "your req accepted"
     });
-
+    let cancleSwapData = await userActivityModel.find({
+      tokenid: req.query.tokenid,
+      message: "Swap Request Cancled"
+    });
+    let rejectSwapData = await userActivityModel.find({
+      tokenid: req.query.tokenid,
+      message: "You Rejected Swap Request"
+    });
     let NFTtransferData = await userActivityModel.find({
       tokenid: req.query.tokenid,
       message: "NFT Transfered"
@@ -143,6 +150,10 @@ exports.NFTdetail = async (req, res) => {
       tokenid: req.query.tokenid,
       message: "you bid got accepted"
     });
+    let NFTbidWithdrawdata = await userActivityModel.find({
+      tokenid: req.query.tokenid,
+      message: "a bid got withdraw"
+    });
     let NFTmakeOfferdata = await userActivityModel.find({
       tokenid: req.query.tokenid,
       message: "you got an offer"
@@ -152,12 +163,15 @@ exports.NFTdetail = async (req, res) => {
       swapDataIN: swapDataIN,
       swapDataOUT: swapDataOUT,
       swapAcceptData: swapAcceptData,
+      cancleSwapData: cancleSwapData,
+      rejectSwapData: rejectSwapData,
       NFTtransferData: NFTtransferData,
       redeemNFTdata: redeemNFTdata,
       burnNFTdata: burnNFTdata,
       bidNFTdata: bidNFTdata,
       bidNFTCount: bidNFTdata.length,
       NFTbidAcceptdata: NFTbidAcceptdata,
+      NFTbidWithdrawdata: NFTbidWithdrawdata,
       NFTmakeOfferdata: NFTmakeOfferdata,
       NFTmakeOfferCount: NFTmakeOfferdata.length,
     })

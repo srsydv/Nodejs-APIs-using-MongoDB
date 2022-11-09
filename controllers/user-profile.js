@@ -458,7 +458,7 @@ exports.acceptSwapRequest = async (req, res) => {
     const token = authHeader.split(' ')[1];
     var user = jwt.decode(token, process.env.JWT_SECRET)
     const userDetail = await userHelper.userDetail(user.address);
-    const NFTdetail = await userHelper.NFTdetails(req.body.tokenid);
+    const NFTdetail = await userHelper.NFTdetails(req.body.toswaptokenid);
 
     let newActivityForUser = new userActivityModel({
 
@@ -499,11 +499,9 @@ exports.acceptSwapRequest = async (req, res) => {
     })
     await getSwapped.save();
 
-
-    await NFTprofileDetailModel.updateMany(
+    await NFTprofileDetailModel.updateOne(
       {
         tokenid: req.body.tokenid,
-        assetname: req.body.assetname
       },
       {
         $set:
@@ -518,18 +516,17 @@ exports.acceptSwapRequest = async (req, res) => {
 
 
 
-    await NFTprofileDetailModel.updateMany(
+    await NFTprofileDetailModel.updateOne(
       {
         tokenid: req.body.toswaptokenid,
-        assetname: req.body.toswapassetname
       },
       {
         $set:
         {
           swapStatus: `Swapped with tokenId ${req.body.tokenid}`,
-          ownerusername: userDetail[0].ownerusername,
-          ownername: userDetail[0].ownername,
-          ownerwltaddress: userDetail[0].ownerwltaddress
+          ownerusername: userDetail[0].username,
+          ownername: userDetail[0].name,
+          ownerwltaddress: userDetail[0].address
         }
       }
     )
