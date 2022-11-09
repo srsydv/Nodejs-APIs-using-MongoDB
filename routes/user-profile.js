@@ -32,6 +32,9 @@ router.route("/acceptSwapRequest").post(access_token.authenticateJWT, userContro
 //Cancle Swap Request
 router.route("/cancleSwapRequest").post(access_token.authenticateJWT, userController.cancleSwapRequest);
 
+//Reject Swap Request
+router.route("/rejectSwapRequest").post(access_token.authenticateJWT, userController.rejectSwapRequest);
+
 //Burn NFT
 router.route("/burnNFT").post(access_token.authenticateJWT, userController.burnNFT);
 

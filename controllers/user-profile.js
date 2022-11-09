@@ -318,7 +318,14 @@ exports.buyNFT = async (req, res) => {
           ownername: userDetail[0].name,
           ownerwltaddress: user.address,
           ownerusername: userDetail[0].username,
-          buyamount: req.body.buyamount
+          buyamount: req.body.buyamount,
+          mptype:"",
+          mpprice: "",
+          mpduration: "",
+          mpsupply: "",
+          mpsetasbundle: "",
+          mpfees: "",
+          listonmarketplace: "false",
         }
       }
     )
@@ -567,7 +574,7 @@ exports.cancleSwapRequest = async (req, res) => {
 
 
 
-    await NFTprofileDetailModel.updateMany(
+    await NFTprofileDetailModel.updateOne(
       {
         tokenid: req.body.tokenid,
         assetname: req.body.assetname
@@ -576,24 +583,6 @@ exports.cancleSwapRequest = async (req, res) => {
         $set:
         {
           swapStatus: `Swap Request Cancled with tokenId ${req.body.toswaptokenid}`
-        }
-      }
-    )
-
-
-
-    await NFTprofileDetailModel.updateMany(
-      {
-        tokenid: req.body.toswaptokenid,
-        assetname: req.body.toswapassetname
-      },
-      {
-        $set:
-        {
-          swapStatus: `Swap Request Cancled with tokenId ${req.body.tokenid}`,
-          ownerusername: userDetail[0].username,
-          ownername: userDetail[0].name,
-          ownerwltaddress: userDetail[0].ownerwltaddress
         }
       }
     )
@@ -609,6 +598,77 @@ exports.cancleSwapRequest = async (req, res) => {
   }
 }
 
+
+exports.rejectSwapRequest = async (req, res) => {
+  try {
+    const authHeader = req.headers.authorization;
+    const token = authHeader.split(' ')[1];
+    var user = jwt.decode(token, process.env.JWT_SECRET)
+    const userDetail = await userHelper.userDetail(user.address);
+    const NFTdetail = await userHelper.NFTdetails(req.body.tokenid);
+
+
+    let newActivityForUser = new userActivityModel({
+
+      assetname: req.body.toswapassetname,
+      tokenid: req.body.toswaptokenid,
+      message: "You Rejected Swap Request",
+      DateAndTime: moment().format(),
+      username: userDetail[0].username,
+      name: userDetail[0].name,
+      userwltaddress: user.address,
+      toswapassetname: req.body.toswapassetname,
+      toswaptokenid: req.body.toswaptokenid,
+      swaprequesttouserwltAddress: NFTdetail[0].ownerwltaddress,
+      swaprequesttoname: NFTdetail[0].ownername,
+      swaprequesttousername: NFTdetail[0].username,
+
+    })
+    await newActivityForUser.save();
+
+
+    let newActivityForOtherUser = new userActivityModel({
+
+      assetname: req.body.assetname,
+      tokenid: req.body.tokenid,
+      message: "Your Swap Request is Rejected",
+      DateAndTime: moment().format(),
+      username: NFTdetail[0].ownerusername,
+      name: NFTdetail[0].ownername,
+      userwltaddress: NFTdetail[0].ownerwltaddress,
+      toswapassetname: req.body.assetname,
+      toswaptokenid: req.body.tokenid,
+      swaprequestuserwltAddress: user.address,
+      swaprequestname: userDetail[0].name,
+      swaprequestusername: userDetail[0].username,
+    })
+    await newActivityForOtherUser.save();
+
+
+
+    await NFTprofileDetailModel.updateOne(
+      {
+        tokenid: req.body.tokenid,
+        assetname: req.body.assetname
+      },
+      {
+        $set:
+        {
+          swapStatus: `Swap Request Rejected with tokenId ${req.body.toswaptokenid}`
+        }
+      }
+    )
+
+
+    res.send({ result: "Swap Request Rejected" })
+  } catch (error) {
+    res.status(400).json({
+      success: false,
+      data: [],
+      message: "Failed to accept swap request",
+    });
+  }
+}
 
 
 exports.burnNFT = async (req, res) => {
