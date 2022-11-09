@@ -319,7 +319,7 @@ exports.buyNFT = async (req, res) => {
           ownerwltaddress: user.address,
           ownerusername: userDetail[0].username,
           buyamount: req.body.buyamount,
-          mptype:"",
+          mptype: "",
           mpprice: "",
           mpduration: "",
           mpsupply: "",
@@ -971,7 +971,7 @@ exports.redeemNFT = async (req, res) => {
       }
     )
 
-    
+
 
     res.send({ result: "NFT Redeem, Successfully" })
   } catch (error) {
@@ -1261,7 +1261,7 @@ exports.withdrawBid = async (req, res) => {
       saleid: req.body.saleid,
     })
     await ActivityForOtherUser.save();
-    
+
     // await userActivityModel.findOneAndDelete(
     //   {
     //     userwltaddress: user.address,
@@ -1341,7 +1341,7 @@ exports.acceptBid = async (req, res) => {
           ownername: bidDetail[0].name,
           ownerwltaddress: bidDetail[0].userwltaddress,
           sellstatus: "sold",
-          mptype:"",
+          mptype: "",
           mpprice: "",
           mpduration: "",
           mpsupply: "",
@@ -1376,7 +1376,7 @@ exports.acceptBid = async (req, res) => {
         }
       }
     )
-    
+
     res.send({ result: "Bid Accepted, Successfully" })
   } catch (error) {
     console.log("dd", error)

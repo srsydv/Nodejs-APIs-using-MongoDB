@@ -338,7 +338,7 @@ exports.validateNFT = async (req, res) => {
     res.send({ result: "Validated" })
 
   } catch (error) {
-    console.log("ff",error)
+    console.log("ff", error)
     res.status(400).json({
       success: false,
       data: [],

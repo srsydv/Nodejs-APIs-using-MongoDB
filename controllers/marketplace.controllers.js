@@ -37,6 +37,25 @@ exports.listNFTforMP = async (req, res) => {
       }
     )
 
+    await NFTprofileDetailModel.findOneAndUpdate(
+      {
+        tokenid: req.body.tokenid
+      },
+      {
+        $push: {
+          history: [
+            {
+              userwltaddress: user.address,
+              username: userDetail[0].username,
+              name: userDetail[0].name,
+              message: "NFT Listed on MarketPlace",
+              dateandtime: moment().format(),
+            }
+          ],
+        }
+      }
+    )
+
     res.send({ result: "Listed" })
   } catch (error) {
     res.status(400).json({
@@ -70,6 +89,25 @@ exports.unlistNFTforMP = async (req, res) => {
           mpendingprice: "",
           saleid: "",
           listonmarketplace: "false"
+        }
+      }
+    )
+
+    await NFTprofileDetailModel.findOneAndUpdate(
+      {
+        tokenid: req.body.tokenid
+      },
+      {
+        $push: {
+          history: [
+            {
+              userwltaddress: user.address,
+              username: userDetail[0].username,
+              name: userDetail[0].name,
+              message: "NFT unListed From MarketPlace",
+              dateandtime: moment().format(),
+            }
+          ],
         }
       }
     )

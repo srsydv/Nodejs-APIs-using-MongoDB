@@ -122,7 +122,7 @@ exports.NFTdetail = async (req, res) => {
       tokenid: req.query.tokenid,
       message: "your req accepted"
     });
-    
+
     let NFTtransferData = await userActivityModel.find({
       tokenid: req.query.tokenid,
       message: "NFT Transfered"
