@@ -315,6 +315,7 @@ exports.validateNFT = async (req, res) => {
         }
       }
     )
+
     await NFTprofileDetailModel.findOneAndUpdate(
       {
         tokenid: req.body.tokenid
@@ -324,7 +325,10 @@ exports.validateNFT = async (req, res) => {
           history: [
             {
               userwltaddress: user.address,
-              message: "Validated"
+              username: userDetail[0].username,
+              name: userDetail[0].name,
+              message: "NFT Validated",
+              dateandtime: moment().format(),
             }
           ],
         }

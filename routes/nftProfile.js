@@ -8,7 +8,7 @@ const router = express.Router();
 
 // router.route("/").get(getNfts).post(createNft);
 
-router.route("/createNFT").get(advancedResults(NftModel), NFTprofileController.getNfts).post(NFTprofileController.createNft);
+router.route("/createNFT").get(advancedResults(NftModel), NFTprofileController.getNfts).post(access_token.authenticateJWT, NFTprofileController.createNft);
 
 // NFT Detail By Tokenid
 router.route("/NFTdetail").get(access_token.authenticateJWT, NFTprofileController.NFTdetail);

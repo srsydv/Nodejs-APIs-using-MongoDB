@@ -71,6 +71,25 @@ exports.createNft = asyncHandler(async (req, res, next) => {
 
     })
     await newNFT.save();
+
+    await NftModel.findOneAndUpdate(
+      {
+        tokenid: req.body.tokenid
+      },
+      {
+        $push: {
+          history: [
+            {
+              userwltaddress: user.address,
+              username: userDetail[0].username,
+              name: userDetail[0].name,
+              message: "NFT Created",
+              dateandtime: moment().format(),
+            }
+          ],
+        }
+      }
+    )
     res.status(201).json({
       success: true,
     });

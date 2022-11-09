@@ -3,7 +3,11 @@ const mongoose = require("mongoose");
 
 const historySchema = new mongoose.Schema({
   userwltaddress: String,
+  username:String,
+  name:String,
   message: String,
+  dateandtime: String,
+  toswaptokenid:String,
 },{ timestamps: true });
 
 const NftProfileDetail = new mongoose.Schema({

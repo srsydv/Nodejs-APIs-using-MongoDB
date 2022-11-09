@@ -330,6 +330,25 @@ exports.buyNFT = async (req, res) => {
       }
     )
 
+    await NFTprofileDetailModel.findOneAndUpdate(
+      {
+        tokenid: req.body.tokenid
+      },
+      {
+        $push: {
+          history: [
+            {
+              userwltaddress: user.address,
+              username: userDetail[0].username,
+              name: userDetail[0].name,
+              message: "NFT Baught",
+              dateandtime: moment().format(),
+            }
+          ],
+        }
+      }
+    )
+
     res.send({
       Result: "You Baught this NFT"
     });
@@ -511,6 +530,40 @@ exports.acceptSwapRequest = async (req, res) => {
           ownerusername: userDetail[0].ownerusername,
           ownername: userDetail[0].ownername,
           ownerwltaddress: userDetail[0].ownerwltaddress
+        }
+      }
+    )
+
+    await NFTprofileDetailModel.findOneAndUpdate(
+      {
+        tokenid: req.body.tokenid
+      },
+      {
+        $push: {
+          history: [
+            {
+              message: "NFT Swapped",
+              toswaptokenid: req.body.toswaptokenid,
+              dateandtime: moment().format(),
+            }
+          ],
+        }
+      }
+    )
+
+    await NFTprofileDetailModel.findOneAndUpdate(
+      {
+        tokenid: req.body.toswaptokenid
+      },
+      {
+        $push: {
+          history: [
+            {
+              message: "NFT Swapped",
+              toswaptokenid: req.body.tokenid,
+              dateandtime: moment().format(),
+            }
+          ],
         }
       }
     )
@@ -736,6 +789,25 @@ exports.burnNFT = async (req, res) => {
       }
     )
 
+    await NFTprofileDetailModel.findOneAndUpdate(
+      {
+        tokenid: req.body.tokenid
+      },
+      {
+        $push: {
+          history: [
+            {
+              userwltaddress: user.address,
+              username: userDetail[0].username,
+              name: userDetail[0].name,
+              message: "NFT Burned",
+              dateandtime: moment().format(),
+            }
+          ],
+        }
+      }
+    )
+
     res.send({ result: "NFT Burned, Successfully" })
   } catch (error) {
     res.status(400).json({
@@ -880,6 +952,27 @@ exports.redeemNFT = async (req, res) => {
       }
     )
 
+    await NFTprofileDetailModel.findOneAndUpdate(
+      {
+        tokenid: req.body.tokenid
+      },
+      {
+        $push: {
+          history: [
+            {
+              userwltaddress: user.address,
+              username: userDetail[0].username,
+              name: userDetail[0].name,
+              message: "NFT Redeemed",
+              dateandtime: moment().format(),
+            }
+          ],
+        }
+      }
+    )
+
+    
+
     res.send({ result: "NFT Redeem, Successfully" })
   } catch (error) {
     res.status(400).json({
@@ -942,6 +1035,25 @@ exports.transferNFT = async (req, res) => {
           ownerusername: userDetailOfTransferedAdd[0].username,
           ownername: userDetailOfTransferedAdd[0].name,
           ownerwltaddress: req.body.nfttransferaddress
+        }
+      }
+    )
+
+    await NFTprofileDetailModel.findOneAndUpdate(
+      {
+        tokenid: req.body.tokenid
+      },
+      {
+        $push: {
+          history: [
+            {
+              userwltaddress: user.address,
+              username: userDetail[0].username,
+              name: userDetail[0].name,
+              message: "NFT Transfered",
+              dateandtime: moment().format(),
+            }
+          ],
         }
       }
     )
@@ -1245,6 +1357,26 @@ exports.acceptBid = async (req, res) => {
         bidid: req.body.bidid
       }
     )
+
+    await NFTprofileDetailModel.findOneAndUpdate(
+      {
+        tokenid: req.body.tokenid
+      },
+      {
+        $push: {
+          history: [
+            {
+              userwltaddress: user.address,
+              username: userDetail[0].username,
+              name: userDetail[0].name,
+              message: "Sold By Bid",
+              dateandtime: moment().format(),
+            }
+          ],
+        }
+      }
+    )
+    
     res.send({ result: "Bid Accepted, Successfully" })
   } catch (error) {
     console.log("dd", error)
