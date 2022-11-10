@@ -1300,7 +1300,7 @@ exports.acceptBid = async (req, res) => {
 
       assetname: req.body.assetname,
       tokenid: req.body.tokenid,
-      message: "you bid got accepted",
+      message: "your bid got accepted",
       DateAndTime: moment().format(),
       username: bidDetail[0].username,
       name: bidDetail[0].name,

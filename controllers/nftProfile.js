@@ -116,11 +116,15 @@ exports.NFTdetail = async (req, res) => {
     });
     let swapDataOUT = await userActivityModel.find({
       tokenid: req.query.tokenid,
-      message: "Swap Request OUT"
+      message: "Swap Request OUT",
+
     });
     let swapAcceptData = await userActivityModel.find({
       tokenid: req.query.tokenid,
-      message: "your req accepted"
+      // message: [{ $or: "You Accepted swap Request" , "Your Swap Request is Accepted"}]
+      $or:[ 
+        {'message':"You Accepted swap Request"}, {'message':"Your Swap Request is Accepted"} 
+      ]
     });
     let cancleSwapData = await userActivityModel.find({
       tokenid: req.query.tokenid,
@@ -128,7 +132,9 @@ exports.NFTdetail = async (req, res) => {
     });
     let rejectSwapData = await userActivityModel.find({
       tokenid: req.query.tokenid,
-      message: "You Rejected Swap Request"
+      $or:[ 
+        {'message':"You Rejected Swap Request"}, {'message':"Your Swap Request is Rejected"} 
+      ]
     });
     let NFTtransferData = await userActivityModel.find({
       tokenid: req.query.tokenid,
@@ -148,7 +154,7 @@ exports.NFTdetail = async (req, res) => {
     });
     let NFTbidAcceptdata = await userActivityModel.find({
       tokenid: req.query.tokenid,
-      message: "you bid got accepted"
+      message: "your bid got accepted"
     });
     let NFTbidWithdrawdata = await userActivityModel.find({
       tokenid: req.query.tokenid,
