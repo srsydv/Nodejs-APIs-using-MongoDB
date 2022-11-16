@@ -99,6 +99,21 @@ exports.validatorloginAsUser = async function (req, res) {
   }
 };
 
+exports.validatorDetail = async (req, res) => {
+  try {
+    query = ValidatorModel.find({address:(req.query.validatorwltaddress).toLowerCase()});
+    const results = await query;
+    res.status(200).json(results);
+  } catch (error) {
+    console.log("hh",error)
+    res.status(400).json({
+      success: false,
+      data: [],
+      message: "Failed to edit Profile",
+    });
+  }
+
+}
 
 
 exports.EditvalidatorProfile = async (req, res) => {

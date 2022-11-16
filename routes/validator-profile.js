@@ -13,11 +13,14 @@ router.route("/").get(validatorController.getValidators).post(validatorControlle
 //validator login as User
 router.route("/validatorloginAsUser").post(validatorController.validatorloginAsUser);
 
+//validator Detail
+router.route("/validatorDetail").get(access_token.authenticateJWT, validatorController.validatorDetail);
+
 //edit profile of Validator
 router.route("/EditvalidatorProfile").put(access_token.authenticateJWT, validatorController.EditvalidatorProfile);
 
 // All Validators Profile
-router.route("/validatorsProfile").get(access_token.authenticateJWT, advancedResults(ValidatorModel), validatorController.validatorsProfile);
+router.route("/validatorsProfile").get(access_token.authenticateJWT, validatorController.validatorsProfile);
 
 // All Requests for Validation for validator
 router.route("/RequestforValidation").get(access_token.authenticateJWT,  validatorController.RequestforValidation);
