@@ -349,22 +349,99 @@ exports.validateNFT = async (req, res) => {
 
 
 
-exports.MyValidatedNFT = async (req, res) => {
+// exports.MyValidatedNFT = async (req, res) => {
+//   try {
+//     const authHeader = req.headers.authorization;
+//     const token = authHeader.split(' ')[1];
+//     var user = jwt.decode(token, process.env.JWT_SECRET)
+//     let data = await nftForValidation.find({ validationstate: "validated", validatorwltaddress: user.address });
+//     res.send({ result: data })
+//   } catch (error) {
+//     res.status(400).json({
+//       success: false,
+//       data: [],
+//       message: "Failed",
+//     });
+//   }
+
+// }
+
+
+exports.MyValidatedNFT = asyncHandler(async (req, res, next) => {
   try {
     const authHeader = req.headers.authorization;
     const token = authHeader.split(' ')[1];
-    var user = jwt.decode(token, process.env.JWT_SECRET)
-    let data = await nftForValidation.find({ validationstate: "validated", validatorwltaddress: user.address });
-    res.send({ result: data })
-  } catch (error) {
+    let user = jwt.decode(token, process.env.JWT_SECRET)
+
+    let query;
+
+    const { sortby = "latest", state = "all" } = req.query;
+
+    let queryStr = {
+      validationstate: "validated",
+      validatorwltaddress: req.query.validatorwltaddress,
+    }
+
+    if (state === "validated") {
+      queryStr["validationstate"] = "validated";
+    } else if (state === "redeemed") {
+      queryStr["redeemNFTrequest"] = "redeemed";
+    } else if (state === "asset requested") {
+      queryStr["redeemNFTrequest"] = "accepted";
+    } else if (state === "burned") {
+      queryStr["burnNFTstatus"] = "true"
+    }
+
+    query = nftForValidation.find(queryStr);
+
+    if (sortby === "oldest") {
+      query = query.sort("createdAt");
+    } else {
+      query = query.sort("-createdAt");
+    }
+
+    const page = parseInt(req.query.page, 10) || 1;
+    const limit = parseInt(req.query.limit, 10) || 30;
+    const startIndex = (page - 1) * limit;
+    const endIndex = page * limit;
+    const total = await nftForValidation.countDocuments(queryStr);
+    query = query.skip(startIndex).limit(limit);
+
+    const results = await query;
+
+    const pagination = {};
+
+    if (endIndex < total) {
+      pagination.next = {
+        page: page + 1,
+        limit,
+      };
+    }
+
+    if (startIndex > 0) {
+      pagination.prev = {
+        page: page - 1,
+        limit,
+      };
+    }
+
+    return res.status(200).json({
+      success: true,
+      count: results.length,
+      totalCount: total,
+      pagination: results.length ? pagination : {},
+      data: results,
+    });
+  } catch (err) {
+    console.log("hh",err)
     res.status(400).json({
       success: false,
       data: [],
-      message: "Failed",
+      message: "Failed to execute",
     });
   }
+});
 
-}
 
 
 exports.acceptRedeemReq = async (req, res) => {
