@@ -206,6 +206,8 @@ exports.NFTsForSwap = async (req, res) => {
     if (blockchain === "" || assettype === "") {
       queryStr = {
         validationstate: "validated",
+        sellstatus: "not started",
+        listonmarketplace: "false",
       };
     } else {
       queryStr = {
@@ -213,6 +215,8 @@ exports.NFTsForSwap = async (req, res) => {
         typeofart: assettype,
         estimatedvalue: { $gte: from, $lte: to },
         validationstate: "validated",
+        sellstatus: "not started",
+        listonmarketplace: "false",
       };
     }
 
