@@ -349,24 +349,6 @@ exports.validateNFT = async (req, res) => {
 
 
 
-// exports.MyValidatedNFT = async (req, res) => {
-//   try {
-//     const authHeader = req.headers.authorization;
-//     const token = authHeader.split(' ')[1];
-//     var user = jwt.decode(token, process.env.JWT_SECRET)
-//     let data = await nftForValidation.find({ validationstate: "validated", validatorwltaddress: user.address });
-//     res.send({ result: data })
-//   } catch (error) {
-//     res.status(400).json({
-//       success: false,
-//       data: [],
-//       message: "Failed",
-//     });
-//   }
-
-// }
-
-
 exports.MyValidatedNFT = asyncHandler(async (req, res, next) => {
   try {
     const authHeader = req.headers.authorization;
@@ -392,7 +374,7 @@ exports.MyValidatedNFT = asyncHandler(async (req, res, next) => {
       queryStr["burnNFTstatus"] = "true"
     }
 
-    query = nftForValidation.find(queryStr);
+    query = NFTprofileDetailModel.find(queryStr);
 
     if (sortby === "oldest") {
       query = query.sort("createdAt");
