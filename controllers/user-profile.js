@@ -770,40 +770,31 @@ exports.burnNFT = async (req, res) => {
     })
     await ActivityForValidator.save();
 
-    await NFTprofileDetailModel.updateMany(
+    await NFTprofileDetailModel.deleteOne(
       {
         tokenid: req.body.tokenid,
         assetname: req.body.assetname
-      },
-      {
-        $set:
-        {
-          burnNFTstatus: "True",
-          ownerusername: validatorDetail[0].username,
-          ownername: validatorDetail[0].name,
-          ownerwltaddress: req.body.validatorwltaddress
-        }
       }
     )
 
-    await NFTprofileDetailModel.findOneAndUpdate(
-      {
-        tokenid: req.body.tokenid
-      },
-      {
-        $push: {
-          history: [
-            {
-              userwltaddress: user.address,
-              username: userDetail[0].username,
-              name: userDetail[0].name,
-              message: "NFT Burned",
-              dateandtime: moment().format(),
-            }
-          ],
-        }
-      }
-    )
+    // await NFTprofileDetailModel.findOneAndUpdate(
+    //   {
+    //     tokenid: req.body.tokenid
+    //   },
+    //   {
+    //     $push: {
+    //       history: [
+    //         {
+    //           userwltaddress: user.address,
+    //           username: userDetail[0].username,
+    //           name: userDetail[0].name,
+    //           message: "NFT Burned",
+    //           dateandtime: moment().format(),
+    //         }
+    //       ],
+    //     }
+    //   }
+    // )
 
     res.send({ result: "NFT Burned, Successfully" })
   } catch (error) {
