@@ -101,11 +101,11 @@ exports.validatorloginAsUser = async function (req, res) {
 
 exports.validatorDetail = async (req, res) => {
   try {
-    query = ValidatorModel.find({address:(req.query.validatorwltaddress).toLowerCase()});
+    query = ValidatorModel.find({ address: (req.query.validatorwltaddress).toLowerCase() });
     const results = await query;
     res.status(200).json(results);
   } catch (error) {
-    console.log("hh",error)
+    console.log("hh", error)
     res.status(400).json({
       success: false,
       data: [],
@@ -167,8 +167,42 @@ exports.EditvalidatorProfile = async (req, res) => {
 
 exports.validatorsProfile = async (req, res) => {
   try {
-    res.status(200).json(res.advancedResults);
+    query = ValidatorModel.find();
+
+    const page = parseInt(req.query.page, 10) || 1;
+    const limit = parseInt(req.query.limit, 10) || 30;
+    const startIndex = (page - 1) * limit;
+    const endIndex = page * limit;
+    const total = await ValidatorModel.countDocuments(query);
+    query = query.skip(startIndex).limit(limit);
+
+    const results = await query;
+
+    const pagination = {};
+
+    if (endIndex < total) {
+      pagination.next = {
+        page: page + 1,
+        limit,
+      };
+    }
+
+    if (startIndex > 0) {
+      pagination.prev = {
+        page: page - 1,
+        limit,
+      };
+    }
+
+    return res.status(200).json({
+      success: true,
+      count: results.length,
+      totalCount: total,
+      pagination: results.length ? pagination : {},
+      data: results,
+    });
   } catch (error) {
+    console.log("hh", error)
     res.status(400).json({
       success: false,
       data: [],
@@ -430,7 +464,7 @@ exports.MyValidatedNFT = asyncHandler(async (req, res, next) => {
       data: results,
     });
   } catch (err) {
-    console.log("hh",err)
+    console.log("hh", err)
     res.status(400).json({
       success: false,
       data: [],
