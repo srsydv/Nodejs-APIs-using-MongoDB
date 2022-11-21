@@ -371,6 +371,7 @@ exports.reqForSwapAsset = async (req, res) => {
     var user = jwt.decode(token, process.env.JWT_SECRET)
     const userDetail = await userHelper.userDetail(user.address);
     const NFTdetail = await userHelper.NFTdetails(req.body.tokenid);
+    const otherNFTdetail = await userHelper.NFTdetails(req.body.toswaptokenid);
     let newActivityForUser = new userActivityModel({
 
       assetname: req.body.assetname,
@@ -384,14 +385,13 @@ exports.reqForSwapAsset = async (req, res) => {
       toswapassetname: req.body.toswapassetname,
       toswaptokenid: req.body.toswaptokenid,
       //This address will also get notification for swap Request IN
-      swaprequestuserwltAddress: NFTdetail[0].ownerwltaddress,
-      swaprequestname: NFTdetail[0].ownername,
-      swaprequestusername: NFTdetail[0].username,
+      swaprequestuserwltAddress: otherNFTdetail[0].ownerwltaddress,
+      swaprequestname: otherNFTdetail[0].ownername,
+      swaprequestusername: otherNFTdetail[0].username,
       swapid: req.body.swapid,
       swapstatus: "you send swap request"
     })
     await newActivityForUser.save();
-
 
     let getSwapReq = new userActivityModel({
 
@@ -401,7 +401,7 @@ exports.reqForSwapAsset = async (req, res) => {
       DateAndTime: moment().format(),
       username: NFTdetail[0].username,
       name: NFTdetail[0].name,
-      userwltaddress: NFTdetail[0].ownerwltaddress,
+      userwltaddress: otherNFTdetail[0].ownerwltaddress,
       toswapassetname: req.body.assetname,
       toswaptokenid: req.body.tokenid,
       swaprequestuserwltAddress: user.address,
@@ -442,6 +442,7 @@ exports.reqForSwapAsset = async (req, res) => {
     res.send({ result: "Swap Request Sent, Successfully" })
 
   } catch (error) {
+    console.log("hh",error)
     res.status(400).json({
       success: false,
       data: [],

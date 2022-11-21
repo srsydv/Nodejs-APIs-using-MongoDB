@@ -46,8 +46,8 @@ exports.listNFTforMP = async (req, res) => {
           history: [
             {
               userwltaddress: user.address,
-              username: userDetail[0].username,
-              name: userDetail[0].name,
+              username: user.username,
+              name: user.name,
               message: "NFT Listed on MarketPlace",
               dateandtime: moment().format(),
             }
@@ -58,6 +58,7 @@ exports.listNFTforMP = async (req, res) => {
 
     res.send({ result: "Listed" })
   } catch (error) {
+    console.log("ff",error)
     res.status(400).json({
       success: false,
       data: [],
