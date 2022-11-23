@@ -1282,6 +1282,7 @@ exports.acceptBid = async (req, res) => {
 
     const clm = {
       bidid: req.body.bidid,
+      saleid: req.body.saleid,
       message: "you made bid"
     }
 
