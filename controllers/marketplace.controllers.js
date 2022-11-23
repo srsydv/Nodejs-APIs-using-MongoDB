@@ -103,8 +103,8 @@ exports.unlistNFTforMP = async (req, res) => {
           history: [
             {
               userwltaddress: user.address,
-              username: userDetail[0].username,
-              name: userDetail[0].name,
+              username: user.username,
+              name: user.name,
               message: "NFT unListed From MarketPlace",
               dateandtime: moment().format(),
             }
